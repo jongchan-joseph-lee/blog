@@ -1,0 +1,34 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection, render } from 'astro:content';
+import { url, editUrl } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const projects = (await getCollection('projects')).filter((p) => !p.data.draft);
+  return projects.map((p) => ({ params: { slug: p.id }, props: { p } }));
+}
+const { p } = Astro.props;
+const { Content } = await render(p);
+const source = `src/content/projects/${p.id}/index.md`;
+const fmt = (d: Date) => `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+---
+<Base title={p.data.title} description={p.data.summary} source={source} image={p.data.cover.src}>
+  <article class="wrap">
+    <header class="page-head">
+      <p class="kicker">{p.data.kind}</p>
+      <h1>{p.data.title}</h1>
+      <p class="sub">{p.data.subtitle}</p>
+      <p class="meta">
+        <a href={p.data.repo}>GitHub 저장소</a>
+        <span>업데이트 {fmt(p.data.updated)}</span>
+      </p>
+    </header>
+    <div class="prose">
+      <Content />
+    </div>
+    <p class="edit">
+      <a href={url('projects/')}>프로젝트 목록</a>
+      <a href={editUrl(source)}>GitHub에서 이 글 수정</a>
+    </p>
+  </article>
+</Base>

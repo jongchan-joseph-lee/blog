@@ -1,0 +1,29 @@
+---
+import Base from '../layouts/Base.astro';
+import { getEntry, render } from 'astro:content';
+import { site, url } from '../lib/site';
+
+const page = (await getEntry('pages', 'profile'))!;
+const { Content, headings } = await render(page);
+const toc = headings.filter((h) => h.depth === 2);
+const source = 'src/content/pages/profile.md';
+---
+<Base title={page.data.title} description={page.data.description} source={source}>
+  <div class="wrap profile">
+    <aside class="profile-side">
+      <img src={url('images/profile.jpg')} alt={`${site.name_ko} 사진`} width="240" height="240" />
+      <h1>{site.name_ko}<small>{site.name_en}</small></h1>
+      <p>{site.role}<br />{site.affiliation}</p>
+      <ul>
+        <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+        {site.links.map((l) => <li><a href={l.url}>{l.label}</a></li>)}
+      </ul>
+      <nav class="profile-toc" aria-label="프로필 목차">
+        {toc.map((h) => <a href={`#${h.slug}`}>{h.text}</a>)}
+      </nav>
+    </aside>
+    <div class="prose">
+      <Content />
+    </div>
+  </div>
+</Base>

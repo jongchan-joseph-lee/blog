@@ -1,0 +1,63 @@
+---
+import Base from '../../layouts/Base.astro';
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import { work, workGroups, period, url } from '../../lib/site';
+
+const projects = (await getCollection('projects'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => a.data.order - b.data.order);
+const groups = Object.entries(workGroups)
+  .map(([key, label]) => ({ key, label, items: work.filter((w) => w.group === key) }))
+  .filter((g) => g.items.length);
+---
+<Base title="프로젝트" description="공개 연구 저장소와 연구 · 산업 과제" source="src/data/work.yaml">
+  <div class="wrap">
+    <header class="page-head">
+      <h1>프로젝트</h1>
+      <p class="sub">공개 자료로 직접 검증한 개인 연구와, 2020년 이후 참여한 연구 · 산업 과제입니다. 과제명은 CV의 영문 표기를 그대로 두고 맡은 역할을 중심으로 적었습니다.</p>
+    </header>
+
+    <section class="section" style="margin-top:48px" aria-labelledby="open-research">
+      <div class="section-head"><h2 id="open-research">공개 연구</h2></div>
+      {projects.map((p) => (
+        <article class="proj">
+          <a class="proj-fig" href={url(`projects/${p.id}/`)} tabindex="-1" aria-hidden="true">
+            <Image src={p.data.cover} alt="" widths={[480, 800]} sizes="(max-width: 860px) 100vw, 440px" />
+          </a>
+          <div>
+            <p class="proj-kind">{p.data.kind}</p>
+            <h3><a href={url(`projects/${p.id}/`)}>{p.data.title}</a></h3>
+            <p class="proj-sub">{p.data.subtitle}</p>
+            <p class="proj-result">{p.data.result}</p>
+            <p class="proj-actions">
+              <a href={url(`projects/${p.id}/`)}>글 읽기</a>
+              <a href={p.data.repo}>저장소 보기</a>
+            </p>
+          </div>
+        </article>
+      ))}
+    </section>
+
+    <section class="section" aria-labelledby="work-all">
+      <div class="section-head"><h2 id="work-all">연구 · 산업 과제</h2></div>
+      {groups.map((g) => (
+        <>
+          <h3 style="font-size:17px;margin:40px 0 0;color:var(--mute);font-weight:500">{g.label}</h3>
+          <ol class="timeline">
+            {g.items.map((w) => (
+              <li>
+                <span class="t-year">{period(w)}</span>
+                <div>
+                  <div class="t-title">{w.title}</div>
+                  <div class="t-meta">{w.funder}</div>
+                  <p class="t-role">{w.role}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </>
+      ))}
+    </section>
+  </div>
+</Base>

@@ -1,0 +1,28 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection, render } from 'astro:content';
+import { url, editUrl } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const posts = (await getCollection('posts')).filter((p) => !p.data.draft);
+  return posts.map((p) => ({ params: { slug: p.id }, props: { p } }));
+}
+const { p } = Astro.props;
+const { Content } = await render(p);
+const source = p.filePath ?? `src/content/posts/${p.id}.md`;
+const fmt = (d: Date) => `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+---
+<Base title={p.data.title} description={p.data.summary} source={source}>
+  <article class="wrap">
+    <header class="page-head">
+      <h1>{p.data.title}</h1>
+      {p.data.summary && <p class="sub">{p.data.summary}</p>}
+      <p class="meta"><time datetime={p.data.date.toISOString()}>{fmt(p.data.date)}</time>{p.data.tags.map((t) => <span>{t}</span>)}</p>
+    </header>
+    <div class="prose"><Content /></div>
+    <p class="edit">
+      <a href={url('posts/')}>글 목록</a>
+      <a href={editUrl(source)}>GitHub에서 이 글 수정</a>
+    </p>
+  </article>
+</Base>

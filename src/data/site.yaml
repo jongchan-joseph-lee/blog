@@ -1,0 +1,37 @@
+# 사이트 전체에 쓰이는 기본 정보입니다. 이 파일만 고치면 홈 · 머리글 · 바닥글이 함께 바뀝니다.
+
+name_ko: 이종찬
+name_en: Jongchan Lee
+role: Underwater Acoustics(수중음향) 연구자
+affiliation: ㈜지오시스템리서치 시스템개발부 전임연구원 (GeoSystem Research Corporation)
+
+# 홈 첫 문단. 두세 문장이 적당합니다.
+intro: >-
+  바다 속 소리로 해양생물과 해양환경을 이해하는 연구를 합니다.
+  Passive Acoustic Monitoring(PAM, 수동음향 모니터링)을 중심으로
+  하이드로폰 계측부터 신호처리, AI 기반 탐지 · 분류, 시스템 통합과 현장 운용까지 다뤄 왔습니다.
+
+email: chani3218@gmail.com
+
+links:
+  - label: Google Scholar
+    url: https://scholar.google.co.kr/citations?hl=ko&user=EeDTB8AAAAAJ
+  - label: ResearchGate
+    url: https://www.researchgate.net/profile/Jongchan-Lee-11
+  - label: GitHub
+    url: https://github.com/jongchan-joseph-lee
+
+# 홈의 "지금 하고 있는 일" 목록
+focus:
+  - title: Marine Mammal Sound Classification(해양포유류 음향 분류)
+    text: 공개 해양포유류 음향 DB에서 레퍼런스 모델을 녹음 출처를 분리한 조건으로 검증하고, 출처를 넘어 일반화되는 분류 단위를 찾고 있습니다.
+  - title: Real-time Bioacoustic Annotation(실시간 생물음향 주석)
+    text: 연속 녹음 흐름 속에서 생물음향 이벤트를 실시간으로 찾아 표시하는 기술을 목표로 합니다.
+  - title: Noise Understanding(잡음 이해)
+    text: 생물음향뿐 아니라 선박 · 환경 잡음까지 분류하고 해석하는 것이 장기 목표입니다.
+  - title: Science Communication(대중 소통)
+    text: 바다 속 소리를 누구나 이해할 수 있도록 설명하고 교육 자료로 만들고 싶습니다.
+
+# GitHub 저장소 (각 페이지 하단 "GitHub에서 수정" 링크에 쓰입니다)
+repo: jongchan-joseph-lee/jlee_blog
+branch: main

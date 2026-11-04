@@ -1,0 +1,71 @@
+# 연구 · 산업 과제 목록입니다. 위에서부터 최신 순으로 적어 주세요.
+# 항목 하나를 추가하려면 "- start:" 블록을 통째로 복사해 붙여 넣고 내용을 바꾸면 됩니다.
+#
+# start / end : 시작 · 종료 연도 (진행 중이면 end를 비워 두세요)
+# period      : 화면에 보일 기간 표기 (비우면 start–end로 표시)
+# group       : pam | realtime | array | modeling  (프로젝트 페이지의 묶음)
+# role        : 내가 맡은 역할 (한두 문장)
+
+- start: 2026
+  end: 2030
+  title: Development of environmental management technologies for human–nature systems in the estuaries
+  funder: 해양수산과학기술진흥원 (KIMST)
+  group: pam
+  role: 강한 조류 해역(high-current ocean environment)에 맞춘 ICT 기반 해양포유류 PAM 시스템 개발과 하드웨어 통합 — Sparse Array Design(희소 배열 설계)과 Real-time Monitoring Software(실시간 모니터링 소프트웨어) 담당
+
+- start: 2025
+  end: 2026
+  title: Development of an Amphibious Rescue System for Inundation Disasters under Manned-Unmanned Vehicle
+  funder: 한국산업기술진흥원 (KIAT)
+  group: array
+  role: Raspberry Pi 5 기반 4채널 Microphone Array(마이크로폰 배열) 구축, Python/Cython으로 저주파 잡음 제거 필터 설계, OpenAI Whisper(STT)와 MeloTTS(TTS)로 실시간 음성 탐지 구현
+
+- start: 2025
+  end: 2025
+  title: Establishment of a management framework for marine HNS discharge and environmental impact assessment
+  funder: 선박해양플랜트연구소 (KRISO)
+  group: modeling
+  role: 과거 HNS(위험 · 유해물질) 유출 사고의 환경영향평가 체계 종합 검토 · 분석
+
+- start: 2025
+  end: 2025
+  title: Habitat survey of marine protected areas in Goseong, Gangwon Province
+  funder: 해양환경공단 (KOEM)
+  group: pam
+  role: 해양포유류 서식지 모니터링을 위한 현장 자료 취득과 Bioacoustic Signal Analysis(생물음향 신호 분석)
+
+- start: 2025
+  end: 2025
+  title: Establishment of marine life environment and fishery information for Gangneung and Goseong
+  funder: 해양환경공단 (KOEM)
+  group: pam
+  role: Ambient Noise(배경소음) 특성 분석과 해양포유류 발성 수동음향 조사
+
+- start: 2025
+  end: 2025
+  title: Marine benthic environmental survey for 25-N coastal waters
+  funder: 대한민국 해군 (ROK Navy)
+  group: modeling
+  role: High-fidelity Underwater Sound Propagation Modeling(정밀 수중 음파 전달 모델링)과 해군 활용을 위한 음향 신호 분석
+
+- start: 2024
+  end: 2024
+  title: Acoustic survey of finless porpoise habitat in the inland waters of the west coast
+  funder: Korea Marine Environment Technology Institute
+  group: pam
+  role: 서해 내만의 얕은 해역에서 상괭이 Passive Acoustic Detection, Classification and Localization(DCL, 탐지 · 분류 · 위치추정)
+
+- start: 2023
+  end: 2024
+  title: Development of Advanced Science and Technology for Marine Environmental Impact Assessment
+  funder: 해양수산과학기술진흥원 (KIMST)
+  group: pam
+  role: 과학적 환경영향평가를 위한 해양포유류 Bioacoustic Signal Processing(생물음향 신호처리)과 Population Survey(개체군 조사)
+
+- start: 2020
+  end: 2024
+  period: 2020.04 – 2024.11
+  title: Real-time marine biological monitoring and warning system for coastal waters around nuclear power plants
+  funder: 한국수력원자력 (KHNP)
+  group: realtime
+  role: 원전 주변 연안 해양생물의 실시간 음향 감시 · 자동 경보 시스템에서 Core Algorithm Development(핵심 알고리즘 개발)와 System Integration(시스템 통합)

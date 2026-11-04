@@ -1,0 +1,226 @@
+---
+// 홈 첫 화면의 합성 스펙트로그램.
+// 실제 녹음이 아니라, 해양포유류 소리 유형과 자동 주석(annotation)을 보여 주기 위한 그림입니다.
+// 세로축: 로그 주파수 20 Hz – 24 kHz, 가로축: 시간(오른쪽이 현재).
+const ticks = [
+  { f: 100, label: '100 Hz' },
+  { f: 1000, label: '1 kHz' },
+  { f: 10000, label: '10 kHz' },
+];
+const F0 = 20, F1 = 24000;
+const PAD = 0.12; // 위쪽 여백 비율 (주석 글자 자리)
+const pct = (f: number) => (PAD + (1 - PAD) * (1 - (Math.log(f) - Math.log(F0)) / (Math.log(F1) - Math.log(F0)))) * 100;
+---
+<div class="band" data-spectrogram role="img"
+  aria-label="해양포유류 소리가 지나가는 합성 스펙트로그램. 상향 변조음, 휘슬, 클릭 열에 자동 주석 상자가 표시됩니다.">
+  <canvas data-layer="spec"></canvas>
+  <canvas data-layer="ann"></canvas>
+  {ticks.map((t) => <span class="tick" style={`top:${pct(t.f).toFixed(2)}%`}>{t.label}</span>)}
+  <button class="pause" type="button" data-pause aria-pressed="false">일시정지</button>
+</div>
+
+<script>
+  const F0 = 20, F1 = 24000;
+  const LOG0 = Math.log(F0), LOGR = Math.log(F1) - Math.log(F0);
+  const PX_PER_SEC = 52;       // 화면 1초 = 52 CSS px
+  const LOOP = 26;             // 사건 배치 반복 주기(초)
+
+  type Ev = { kind: 'upsweep' | 'whistle' | 'down' | 'clicks'; t0: number; t1: number; fmin: number; fmax: number; label: string };
+
+  // 반복 주기 안의 사건 배치
+  const BASE: Ev[] = [
+    { kind: 'upsweep', t0: 2.0, t1: 3.5, fmin: 60, fmax: 700, label: 'upsweep(상향 변조음)' },
+    { kind: 'whistle', t0: 8.0, t1: 9.3, fmin: 6500, fmax: 15500, label: 'whistle(휘슬)' },
+    { kind: 'clicks', t0: 14.0, t1: 15.8, fmin: 2000, fmax: 24000, label: 'click train(클릭 열)' },
+    { kind: 'down', t0: 20.0, t1: 21.0, fmin: 6000, fmax: 15000, label: 'whistle(휘슬)' },
+  ];
+
+  function eventsNear(t: number): Ev[] {
+    const k = Math.floor(t / LOOP);
+    const out: Ev[] = [];
+    for (let i = k - 1; i <= k + 1; i++) {
+      for (const e of BASE) out.push({ ...e, t0: e.t0 + i * LOOP, t1: e.t1 + i * LOOP });
+    }
+    return out;
+  }
+
+  // 결정적 잡음 (같은 시각이면 같은 값)
+  function hash(n: number) {
+    const x = Math.sin(n * 127.1 + 311.7) * 43758.5453;
+    return x - Math.floor(x);
+  }
+
+  const PAD = 0.12;
+  const yOf = (f: number, H: number) => (PAD + (1 - PAD) * (1 - (Math.log(f) - LOG0) / LOGR)) * H;
+
+  // 한 시각의 세로 열(0~1 세기) 계산
+  function column(t: number, H: number, out: Float32Array) {
+    const seed = Math.floor(t * PX_PER_SEC);
+    for (let y = 0; y < H; y++) {
+      const low = Math.max(0, (y / H - PAD) / (1 - PAD)); // 0 위(고주파) → 1 아래(저주파)
+      out[y] = 0.07 + 0.16 * low * low + 0.09 * hash(seed * 1.31 + y * 7.7);
+    }
+    // 선박 협대역 성분(49 Hz 배음)
+    for (const f of [49, 98, 147, 196]) {
+      const yc = yOf(f * (1 + 0.004 * Math.sin(t * 0.7)), H);
+      addLine(out, yc, 1.4, 0.2, H);
+    }
+    for (const e of eventsNear(t)) {
+      if (t < e.t0 || t > e.t1) continue;
+      const u = (t - e.t0) / (e.t1 - e.t0);
+      const env = Math.sin(Math.PI * u) ** 0.6;
+      if (e.kind === 'upsweep') {
+        const f = 70 * Math.pow(220 / 70, u);
+        for (let h = 1; h <= 3; h++) addLine(out, yOf(f * h, H), 2.2, 0.85 * env / h, H);
+      } else if (e.kind === 'whistle') {
+        const f = 8200 + 2600 * Math.sin(2 * Math.PI * 1.1 * u) + 2400 * u;
+        addLine(out, yOf(f, H), 1.8, 0.8 * env, H);
+      } else if (e.kind === 'down') {
+        const f = 14000 * Math.pow(7000 / 14000, u);
+        addLine(out, yOf(f, H), 1.8, 0.75 * env, H);
+      } else if (e.kind === 'clicks') {
+        const phase = ((t - e.t0) / 0.07) % 1;
+        if (phase < 0.32) {
+          const a = 0.55 + 0.35 * hash(Math.floor((t - e.t0) / 0.07));
+          const yTop = yOf(24000, H), yBot = yOf(2000, H);
+          for (let y = Math.max(0, Math.floor(yTop)); y < Math.min(H, yBot); y++) {
+            const fr = 1 - (y - yTop) / (yBot - yTop); // 높은 주파수일수록 강함
+            out[y] += a * (0.45 + 0.55 * fr) * env;
+          }
+        }
+      }
+    }
+  }
+
+  function addLine(out: Float32Array, yc: number, sigma: number, amp: number, H: number) {
+    const r = Math.ceil(sigma * 3);
+    for (let y = Math.max(0, Math.floor(yc - r)); y <= Math.min(H - 1, Math.ceil(yc + r)); y++) {
+      const d = (y - yc) / sigma;
+      out[y] += amp * Math.exp(-0.5 * d * d);
+    }
+  }
+
+  // 회색조 컬러맵: 띠 배경색 → 밝은 회색
+  const LO = [21, 24, 26], HI = [236, 239, 241];
+  function shade(v: number) {
+    const s = Math.min(1, Math.max(0, v)) ** 1.25;
+    return [LO[0] + (HI[0] - LO[0]) * s, LO[1] + (HI[1] - LO[1]) * s, LO[2] + (HI[2] - LO[2]) * s];
+  }
+
+  function init(root: HTMLElement) {
+    const spec = root.querySelector<HTMLCanvasElement>('[data-layer=spec]')!;
+    const ann = root.querySelector<HTMLCanvasElement>('[data-layer=ann]')!;
+    const btn = root.querySelector<HTMLButtonElement>('[data-pause]')!;
+    const sctx = spec.getContext('2d')!;
+    const actx = ann.getContext('2d')!;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    let W = 0, H = 0, dpr = 1, cssW = 0, cssH = 0;
+    let T = 40;            // 현재 시각(초)
+    let lastCol = 0;       // 마지막으로 그린 열의 시각
+    let raf = 0, last = 0, visible = true, paused = reduce.matches;
+    let col = new Float32Array(1);
+
+    function drawColumnAt(img: ImageData, x: number, t: number) {
+      column(t, H, col);
+      for (let y = 0; y < H; y++) {
+        const [r, g, b] = shade(col[y]);
+        for (let dx = 0; dx < dpr; dx++) {
+          const i = (y * img.width + x + dx) * 4;
+          img.data[i] = r; img.data[i + 1] = g; img.data[i + 2] = b; img.data[i + 3] = 255;
+        }
+      }
+    }
+
+    function resize() {
+      dpr = Math.min(2, Math.round(window.devicePixelRatio || 1));
+      cssW = root.clientWidth; cssH = root.clientHeight;
+      W = cssW * dpr; H = cssH * dpr;
+      for (const c of [spec, ann]) { c.width = W; c.height = H; }
+      col = new Float32Array(H);
+      // 화면 전체를 미리 채움
+      const img = sctx.createImageData(W, H);
+      for (let px = 0; px < cssW; px++) {
+        const t = T - (cssW - 1 - px) / PX_PER_SEC;
+        drawColumnAt(img, px * dpr, t);
+      }
+      sctx.putImageData(img, 0, 0);
+      lastCol = T;
+      drawAnnotations();
+    }
+
+    function step(now: number) {
+      raf = 0;
+      if (paused || !visible) return;
+      const dt = last ? Math.min(0.1, (now - last) / 1000) : 0;
+      last = now;
+      T += dt;
+      const n = Math.floor((T - lastCol) * PX_PER_SEC);
+      if (n > 0) {
+        const shift = n * dpr;
+        sctx.drawImage(spec, -shift, 0);
+        const img = sctx.createImageData(shift, H);
+        for (let k = 0; k < n; k++) {
+          lastCol += 1 / PX_PER_SEC;
+          drawColumnAt(img, k * dpr, lastCol);
+        }
+        sctx.putImageData(img, W - shift, 0);
+      }
+      drawAnnotations();
+      raf = requestAnimationFrame(step);
+    }
+
+    function drawAnnotations() {
+      actx.clearRect(0, 0, W, H);
+      actx.save();
+      actx.scale(dpr, dpr);
+      const mark = '#e8a62a';
+      actx.font = '500 12px "IBM Plex Sans KR", system-ui, sans-serif';
+      actx.textBaseline = 'bottom';
+      for (const e of eventsNear(lastCol)) {
+        if (lastCol < e.t1 + 0.15) continue;              // 사건이 끝나야 표시
+        const age = lastCol - (e.t1 + 0.15);
+        const alpha = Math.min(1, age / 0.5);
+        const x0 = cssW - (lastCol - e.t0 + 0.12) * PX_PER_SEC;
+        const x1 = cssW - (lastCol - e.t1 - 0.12) * PX_PER_SEC;
+        if (x1 < 0 || x0 > cssW) continue;
+        const y0 = yOf(e.fmax, cssH) - 4, y1 = yOf(e.fmin, cssH) + 4;
+        actx.globalAlpha = alpha;
+        actx.strokeStyle = mark;
+        actx.lineWidth = 1.5;
+        actx.strokeRect(Math.round(x0) + 0.5, Math.round(y0) + 0.5, Math.round(x1 - x0), Math.round(y1 - y0));
+        const tw = actx.measureText(e.label).width + 10;
+        const ly = Math.max(16, y0);
+        actx.fillStyle = mark;
+        actx.fillRect(Math.round(x0), ly - 16, tw, 16);
+        actx.fillStyle = '#15181a';
+        actx.fillText(e.label, Math.round(x0) + 5, ly - 2.5);
+      }
+      actx.restore();
+    }
+
+    function play() {
+      if (!raf && !paused && visible) { last = 0; raf = requestAnimationFrame(step); }
+    }
+    function setPaused(p: boolean) {
+      paused = p;
+      btn.textContent = p ? '재생' : '일시정지';
+      btn.setAttribute('aria-pressed', String(p));
+      if (!p) play();
+    }
+
+    btn.addEventListener('click', () => setPaused(!paused));
+    reduce.addEventListener?.('change', () => setPaused(reduce.matches));
+    new IntersectionObserver((es) => { visible = es[0].isIntersecting; play(); }).observe(root);
+    document.addEventListener('visibilitychange', () => { visible = !document.hidden; play(); });
+    let rt = 0;
+    new ResizeObserver(() => { clearTimeout(rt); rt = window.setTimeout(resize, 120); }).observe(root);
+
+    resize();
+    setPaused(paused);
+    // 웹폰트가 늦게 오면 주석 글자를 다시 그림
+    document.fonts?.ready.then(drawAnnotations);
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-spectrogram]').forEach(init);
+</script>

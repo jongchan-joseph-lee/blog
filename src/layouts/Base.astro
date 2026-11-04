@@ -1,0 +1,101 @@
+---
+import '../styles/global.css';
+import { site, url, editUrl } from '../lib/site';
+import { getCollection } from 'astro:content';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** 이 페이지의 원본 파일 (바닥글 "GitHub에서 수정" 링크) */
+  source?: string;
+  image?: string;
+}
+const { title, description, source, image } = Astro.props;
+
+const fullTitle = title ? `${title} | ${site.name_ko} ${site.name_en}` : `${site.name_ko} ${site.name_en} | ${site.role}`;
+const desc = description ?? site.intro.replace(/\s+/g, ' ').trim();
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(image ?? url('images/profile.jpg'), Astro.site);
+
+const path = Astro.url.pathname.replace(/\/$/, '');
+const current = (p: string) => (path === url(p).replace(/\/$/, '') || path.startsWith(url(p).replace(/\/$/, '') + '/') ? 'page' : undefined);
+
+const posts = (await getCollection('posts')).filter((p) => !p.data.draft);
+const github = site.links.find((l) => l.label === 'GitHub');
+---
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={desc} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={desc} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" type="image/svg+xml" href={url('favicon.svg')} />
+    <link rel="sitemap" href={url('sitemap-index.xml')} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap"
+    />
+    <script is:inline>
+      try {
+        const t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main">본문으로 건너뛰기</a>
+    <header class="site-head">
+      <div class="wrap">
+        <a class="brand" href={url()}>{site.name_ko} <small>{site.name_en}</small></a>
+        <nav class="nav" aria-label="주요 메뉴">
+          <a href={url('profile/')} aria-current={current('profile')}>프로필</a>
+          <a href={url('projects/')} aria-current={current('projects')}>프로젝트</a>
+          {posts.length > 0 && <a href={url('posts/')} aria-current={current('posts')}>글</a>}
+          {github && <a href={github.url}>GitHub</a>}
+          <button class="theme-btn" type="button" data-theme-toggle aria-label="밝은 화면 / 어두운 화면 전환">화면 모드</button>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="site-foot">
+      <div class="wrap">
+        <div>© {new Date().getFullYear()} {site.name_ko} {site.name_en}</div>
+        <ul>
+          <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+          {site.links.map((l) => <li><a href={l.url}>{l.label}</a></li>)}
+          {source && <li><a href={editUrl(source)}>GitHub에서 이 페이지 수정</a></li>}
+        </ul>
+      </div>
+    </footer>
+
+    <script is:inline>
+      (function () {
+        const btn = document.querySelector('[data-theme-toggle]');
+        if (!btn) return;
+        btn.addEventListener('click', function () {
+          const root = document.documentElement;
+          const dark = root.dataset.theme
+            ? root.dataset.theme === 'dark'
+            : window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const next = dark ? 'light' : 'dark';
+          root.dataset.theme = next;
+          try { localStorage.setItem('theme', next); } catch (e) {}
+        });
+      })();
+    </script>
+  </body>
+</html>

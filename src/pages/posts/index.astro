@@ -1,0 +1,30 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+import { url } from '../../lib/site';
+
+const posts = (await getCollection('posts'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const fmt = (d: Date) => `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+---
+<Base title="글" description="연구 노트와 글" source="src/content/posts/_template.md">
+  <div class="wrap">
+    <header class="page-head"><h1>글</h1></header>
+    {posts.length === 0 ? (
+      <p class="empty">아직 올린 글이 없습니다. src/content/posts/_template.md 를 복사해 첫 글을 써 보세요.</p>
+    ) : (
+      <ul class="posts">
+        {posts.map((p) => (
+          <li>
+            <time datetime={p.data.date.toISOString()}>{fmt(p.data.date)}</time>
+            <div>
+              <a href={url(`posts/${p.id}/`)}>{p.data.title}</a>
+              {p.data.summary && <p>{p.data.summary}</p>}
+            </div>
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+</Base>
