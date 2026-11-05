@@ -31,7 +31,7 @@ export function period(w: Work): string {
   return w.start === w.end ? `${w.start}` : `${w.start} – ${w.end}`;
 }
 
-/** base 경로(/jlee_blog)를 붙인 내부 링크 */
+/** base 경로(/blog)를 붙인 내부 링크 */
 export function url(path = ''): string {
   const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   const p = path.replace(/^\//, '');

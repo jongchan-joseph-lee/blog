@@ -10,4 +10,4 @@ draft: false
 
 본문은 일반 Markdown으로 씁니다.
 
-그림은 public/images/ 에 넣고 ![설명](/jlee_blog/images/파일.png "캡션") 처럼 쓰면 됩니다.
+그림은 public/images/ 에 넣고 ![설명](/blog/images/파일.png "캡션") 처럼 쓰면 됩니다.
