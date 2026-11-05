@@ -1,7 +1,6 @@
-# jlee_blog
-
+# Welcome!
 이종찬(Jongchan Lee)의 개인 연구 블로그 · 포트폴리오입니다.
-주소: https://jongchan-joseph-lee.github.io/jlee_blog/
+주소: https://jongchan-joseph-lee.github.io/blog/
 
 [Astro](https://astro.build)로 만든 정적 사이트이며, `main` 브랜치에 push하면 GitHub Actions가 자동으로 빌드해 GitHub Pages에 배포합니다.
 
