@@ -54,6 +54,20 @@
 
 따옴표 안의 캡션이 있으면 자동으로 그림 아래 캡션으로 표시됩니다.
 
+## 홈 스펙트로그램 바꾸기 (선택)
+
+첫 화면 스펙트로그램은 Watkins Marine Mammal Sound Database 실제 녹음으로 만들고, 신호마다 dur90 · f50 · fpeak · BW−3dB를 계산해 표시합니다.
+
+1. `scripts/hero/clips.yaml`에서 클립(녹음 번호, 보여 줄 구간, 측정 영역)을 고칩니다.
+2. 해당 WAV 파일을 한 폴더에 모은 뒤 실행합니다.
+   ```bash
+   pip install numpy scipy soundfile pillow pyyaml
+   python scripts/hero/build_hero.py --wav-dir <WAV 폴더>
+   ```
+3. `public/hero/strip.webp`와 `src/data/hero.json`이 새로 만들어집니다. 둘을 commit하면 반영됩니다.
+
+측정 방법은 `scripts/hero/build_hero.py` 맨 위 설명과 사이트의 "자료와 측정 방법"에 적혀 있습니다.
+
 ## 내 컴퓨터에서 미리 보기 (선택)
 
 Node.js 22 이상이 필요합니다.

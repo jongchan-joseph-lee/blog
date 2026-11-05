@@ -1,0 +1,86 @@
+# 홈 첫 화면 스펙트로그램에 쓰는 Watkins Marine Mammal Sound Database 클립 목록
+# 순서대로 이어 붙여 왼쪽으로 흘러갑니다.
+#
+# record   : Watkins record number
+# crop     : 화면에 보일 구간 [시작 s, 끝 s]
+# select   : 측정 영역(넉넉하게) [t0 s, t1 s, f_low Hz, f_high Hz]
+# window   : STFT 창 길이(s)
+# name_ko / name_en / signal : 주석에 표시할 이름과 신호 유형
+
+- record: 56015001
+  file: NorthernRightWhale_56015001.wav
+  name_ko: 북대서양긴수염고래
+  name_en: North Atlantic right whale
+  scientific: Eubalaena glacialis
+  signal: moan
+  signal_type: tonal
+  year: 1956
+  place: Vineyard Sound, Massachusetts
+  crop: [0.0, 1.56]
+  select: [0.36, 1.56, 150, 3800]
+  window: 0.128
+
+- record: 51041C02
+  file: BottlenoseDolphin_51041C02.wav
+  name_ko: 큰돌고래
+  name_en: Common bottlenose dolphin
+  scientific: Tursiops truncatus
+  signal: whistle
+  signal_type: tonal
+  year: 1951
+  place: Biscayne Bay, Florida
+  crop: [0.30, 1.40]
+  select: [0.44, 1.14, 4000, 14800]
+  window: 0.0107
+
+- record: 66084011
+  file: LeopardSeal_66084011.wav
+  name_ko: 표범물범
+  name_en: Leopard seal
+  scientific: Hydrurga leptonyx
+  signal: low call
+  signal_type: tonal
+  year: 1966
+  place: N of Cape Jones, Ross Sea, Antarctica
+  crop: [0.20, 5.60]
+  select: [0.30, 5.40, 220, 480]
+  window: 0.205
+
+- record: 66026003
+  file: SpermWhale_66026003.wav
+  name_ko: 향유고래
+  name_en: Sperm whale
+  scientific: Physeter macrocephalus
+  signal: click series
+  signal_type: impulsive
+  year: 1965
+  place: Madeira
+  crop: [0.0, 0.55]
+  select: [0.14, 0.53, 1500, 40000]
+  window: 0.0031
+
+- record: 66036003
+  file: BeardedSeal_66036003.wav
+  name_ko: 턱수염물범
+  name_en: Bearded seal
+  scientific: Erignathus barbatus
+  signal: trill
+  signal_type: tonal
+  year: 1966
+  place: NW of Gambell, St. Lawrence Island, Alaska
+  crop: [0.80, 6.20]
+  select: [1.00, 6.00, 600, 2600]
+  window: 0.0687
+
+- record: 60012001
+  file: KillerWhale_60012001.wav
+  name_ko: 범고래
+  name_en: Killer whale
+  scientific: Orcinus orca
+  signal: pulsed call
+  signal_type: pulsed
+  year: 1960
+  place: Dabob Bay, Washington
+  crop: [0.30, 2.00]
+  select: [0.42, 1.70, 500, 12500]
+  window: 0.0128

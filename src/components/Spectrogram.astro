@@ -1,113 +1,87 @@
 ---
-// 홈 첫 화면의 합성 스펙트로그램.
-// 실제 녹음이 아니라, 해양포유류 소리 유형과 자동 주석(annotation)을 보여 주기 위한 그림입니다.
+// 홈 첫 화면 스펙트로그램 — Watkins Marine Mammal Sound Database 실제 녹음 6개를 이어 붙인 띠.
+// 띠 이미지와 측정값은 scripts/hero/build_hero.py 가 만듭니다 (public/hero/strip.webp, src/data/hero.json).
 // 세로축: 로그 주파수 20 Hz – 24 kHz, 가로축: 시간(오른쪽이 현재).
+import hero from '../data/hero.json';
+import { url } from '../lib/site';
+
+const PAD = 0.14; // 위쪽 여백 비율 (주석 글자 자리)
+const lg = (f: number) => Math.log(f);
+const pct = (f: number) => (PAD + (1 - PAD) * (1 - (lg(f) - lg(hero.f_min)) / (lg(hero.f_max) - lg(hero.f_min)))) * 100;
 const ticks = [
   { f: 100, label: '100 Hz' },
   { f: 1000, label: '1 kHz' },
   { f: 10000, label: '10 kHz' },
 ];
-const F0 = 20, F1 = 24000;
-const PAD = 0.12; // 위쪽 여백 비율 (주석 글자 자리)
-const pct = (f: number) => (PAD + (1 - PAD) * (1 - (Math.log(f) - Math.log(F0)) / (Math.log(F1) - Math.log(F0)))) * 100;
+const hz = (f: number) => (f >= 1000 ? `${(f / 1000).toFixed(f >= 10000 ? 1 : 2)} kHz` : `${Math.round(f)} Hz`);
+const config = { ...hero, pad: PAD, strip: url('hero/strip.webp') };
 ---
 <div class="band" data-spectrogram role="img"
-  aria-label="해양포유류 소리가 지나가는 합성 스펙트로그램. 상향 변조음, 휘슬, 클릭 열에 자동 주석 상자가 표시됩니다.">
+  aria-label="Watkins 해양포유류 음향 DB의 실제 녹음 여섯 개를 이어 붙인 스펙트로그램. 각 신호에 지속시간, 중앙 주파수, 최대 주파수, −3 dB 대역폭이 표시됩니다.">
   <canvas data-layer="spec"></canvas>
   <canvas data-layer="ann"></canvas>
   {ticks.map((t) => <span class="tick" style={`top:${pct(t.f).toFixed(2)}%`}>{t.label}</span>)}
   <button class="pause" type="button" data-pause aria-pressed="false">일시정지</button>
+  <script type="application/json" data-hero set:html={JSON.stringify(config)} />
+</div>
+
+<div class="wrap">
+  <details class="band-info">
+    <summary>Watkins Marine Mammal Sound Database의 실제 녹음 6개를 이어 붙인 스펙트로그램입니다. 상자는 신호 에너지의 90% 구간이고, 수치는 직접 계산한 값입니다. <span>자료와 측정 방법</span></summary>
+    <div class="band-table">
+      <table>
+        <thead>
+          <tr>
+            <th>종 (학명)</th><th>신호</th><th>Watkins 녹음</th><th>fs</th>
+            <th>dur<sub>90</sub></th><th>f<sub>50</sub></th><th>f<sub>peak</sub></th><th>BW<sub>−3 dB</sub></th>
+          </tr>
+        </thead>
+        <tbody>
+          {hero.clips.map((c) => (
+            <tr>
+              <td>{c.name_ko} <i>{c.scientific}</i></td>
+              <td>{c.signal}</td>
+              <td>{c.record}<br /><span class="dim">{c.year}, {c.place}</span></td>
+              <td>{hz(c.fs)}</td>
+              <td>{c.duration.toFixed(2)} s</td>
+              <td>{hz(c.f50)}</td>
+              <td>{hz(c.fpeak)}</td>
+              <td>{hz(c.bw3)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <ul class="band-method">
+      <li>측정 영역 안에서 배경 잡음(주파수 bin별 전체 클립 파워의 20번째 백분위수)을 뺀 파워로 계산했습니다.</li>
+      <li><b>dur<sub>90</sub></b>: 시간 누적 에너지 5–95% 구간의 길이 (Duration 90%)</li>
+      <li><b>f<sub>50</sub></b>: 스펙트럼 누적 에너지가 50%가 되는 주파수 (Center / Median Frequency)</li>
+      <li><b>f<sub>peak</sub></b>: 합산 스펙트럼이 최대인 주파수 (Peak Frequency)</li>
+      <li><b>BW<sub>−3 dB</sub></b>: f<sub>peak</sub> 주변에서 최대값 대비 −3 dB 이내로 이어진 주파수 폭. 값의 분해능은 STFT bin 간격에 따릅니다.</li>
+      <li>점선(fs/2)은 녹음 샘플레이트의 나이퀴스트 주파수이며, 그 위는 자료가 없는 영역입니다.</li>
+      <li>출처: Watkins Marine Mammal Sound Database, Woods Hole Oceanographic Institution (Sayigh et al. 2016, <i>Proc. Meet. Acoust.</i> 27, 040013). Hugging Face 공개본 <code>ivangtorre/watkins-marine-mammal-full-cuts</code>에서 받았습니다. 계산 코드: <code>scripts/hero/build_hero.py</code></li>
+    </ul>
+  </details>
 </div>
 
 <script>
-  const F0 = 20, F1 = 24000;
-  const LOG0 = Math.log(F0), LOGR = Math.log(F1) - Math.log(F0);
-  const PX_PER_SEC = 52;       // 화면 1초 = 52 CSS px
-  const LOOP = 26;             // 사건 배치 반복 주기(초)
+  type Clip = {
+    record: string; name_ko: string; signal: string; fs: number;
+    seg_start: number; seg_end: number; t0: number; t1: number;
+    fmin: number; fmax: number; duration: number; f50: number; fpeak: number; bw3: number;
+  };
+  type Hero = {
+    f_min: number; f_max: number; cols_per_sec: number; loop_sec: number;
+    pad: number; strip: string; clips: Clip[];
+  };
 
-  type Ev = { kind: 'upsweep' | 'whistle' | 'down' | 'clicks'; t0: number; t1: number; fmin: number; fmax: number; label: string };
+  const SPEED = 120; // CSS px per second (화면 이동 속도)
+  const MARK = '#e8a62a';
 
-  // 반복 주기 안의 사건 배치
-  const BASE: Ev[] = [
-    { kind: 'upsweep', t0: 2.0, t1: 3.5, fmin: 60, fmax: 700, label: 'upsweep(상향 변조음)' },
-    { kind: 'whistle', t0: 8.0, t1: 9.3, fmin: 6500, fmax: 15500, label: 'whistle(휘슬)' },
-    { kind: 'clicks', t0: 14.0, t1: 15.8, fmin: 2000, fmax: 24000, label: 'click train(클릭 열)' },
-    { kind: 'down', t0: 20.0, t1: 21.0, fmin: 6000, fmax: 15000, label: 'whistle(휘슬)' },
-  ];
-
-  function eventsNear(t: number): Ev[] {
-    const k = Math.floor(t / LOOP);
-    const out: Ev[] = [];
-    for (let i = k - 1; i <= k + 1; i++) {
-      for (const e of BASE) out.push({ ...e, t0: e.t0 + i * LOOP, t1: e.t1 + i * LOOP });
-    }
-    return out;
-  }
-
-  // 결정적 잡음 (같은 시각이면 같은 값)
-  function hash(n: number) {
-    const x = Math.sin(n * 127.1 + 311.7) * 43758.5453;
-    return x - Math.floor(x);
-  }
-
-  const PAD = 0.12;
-  const yOf = (f: number, H: number) => (PAD + (1 - PAD) * (1 - (Math.log(f) - LOG0) / LOGR)) * H;
-
-  // 한 시각의 세로 열(0~1 세기) 계산
-  function column(t: number, H: number, out: Float32Array) {
-    const seed = Math.floor(t * PX_PER_SEC);
-    for (let y = 0; y < H; y++) {
-      const low = Math.max(0, (y / H - PAD) / (1 - PAD)); // 0 위(고주파) → 1 아래(저주파)
-      out[y] = 0.07 + 0.16 * low * low + 0.09 * hash(seed * 1.31 + y * 7.7);
-    }
-    // 선박 협대역 성분(49 Hz 배음)
-    for (const f of [49, 98, 147, 196]) {
-      const yc = yOf(f * (1 + 0.004 * Math.sin(t * 0.7)), H);
-      addLine(out, yc, 1.4, 0.2, H);
-    }
-    for (const e of eventsNear(t)) {
-      if (t < e.t0 || t > e.t1) continue;
-      const u = (t - e.t0) / (e.t1 - e.t0);
-      const env = Math.sin(Math.PI * u) ** 0.6;
-      if (e.kind === 'upsweep') {
-        const f = 70 * Math.pow(220 / 70, u);
-        for (let h = 1; h <= 3; h++) addLine(out, yOf(f * h, H), 2.2, 0.85 * env / h, H);
-      } else if (e.kind === 'whistle') {
-        const f = 8200 + 2600 * Math.sin(2 * Math.PI * 1.1 * u) + 2400 * u;
-        addLine(out, yOf(f, H), 1.8, 0.8 * env, H);
-      } else if (e.kind === 'down') {
-        const f = 14000 * Math.pow(7000 / 14000, u);
-        addLine(out, yOf(f, H), 1.8, 0.75 * env, H);
-      } else if (e.kind === 'clicks') {
-        const phase = ((t - e.t0) / 0.07) % 1;
-        if (phase < 0.32) {
-          const a = 0.55 + 0.35 * hash(Math.floor((t - e.t0) / 0.07));
-          const yTop = yOf(24000, H), yBot = yOf(2000, H);
-          for (let y = Math.max(0, Math.floor(yTop)); y < Math.min(H, yBot); y++) {
-            const fr = 1 - (y - yTop) / (yBot - yTop); // 높은 주파수일수록 강함
-            out[y] += a * (0.45 + 0.55 * fr) * env;
-          }
-        }
-      }
-    }
-  }
-
-  function addLine(out: Float32Array, yc: number, sigma: number, amp: number, H: number) {
-    const r = Math.ceil(sigma * 3);
-    for (let y = Math.max(0, Math.floor(yc - r)); y <= Math.min(H - 1, Math.ceil(yc + r)); y++) {
-      const d = (y - yc) / sigma;
-      out[y] += amp * Math.exp(-0.5 * d * d);
-    }
-  }
-
-  // 회색조 컬러맵: 띠 배경색 → 밝은 회색
-  const LO = [21, 24, 26], HI = [236, 239, 241];
-  function shade(v: number) {
-    const s = Math.min(1, Math.max(0, v)) ** 1.25;
-    return [LO[0] + (HI[0] - LO[0]) * s, LO[1] + (HI[1] - LO[1]) * s, LO[2] + (HI[2] - LO[2]) * s];
-  }
+  const hz = (f: number) => (f >= 1000 ? `${(f / 1000).toFixed(f >= 10000 ? 1 : 2)} kHz` : `${Math.round(f)} Hz`);
 
   function init(root: HTMLElement) {
+    const cfg = JSON.parse(root.querySelector('[data-hero]')!.textContent!) as Hero;
     const spec = root.querySelector<HTMLCanvasElement>('[data-layer=spec]')!;
     const ann = root.querySelector<HTMLCanvasElement>('[data-layer=ann]')!;
     const btn = root.querySelector<HTMLButtonElement>('[data-pause]')!;
@@ -115,38 +89,108 @@ const pct = (f: number) => (PAD + (1 - PAD) * (1 - (Math.log(f) - Math.log(F0)) 
     const actx = ann.getContext('2d')!;
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-    let W = 0, H = 0, dpr = 1, cssW = 0, cssH = 0;
-    let T = 40;            // 현재 시각(초)
-    let lastCol = 0;       // 마지막으로 그린 열의 시각
-    let raf = 0, last = 0, visible = true, paused = reduce.matches;
-    let col = new Float32Array(1);
+    const L0 = Math.log(cfg.f_min), LR = Math.log(cfg.f_max) - L0;
+    let cssW = 0, cssH = 0, dpr = 1;
+    const yOf = (f: number) => (cfg.pad + (1 - cfg.pad) * (1 - (Math.log(f) - L0) / LR)) * cssH;
+    const loopW = cfg.loop_sec * SPEED; // CSS px
 
-    function drawColumnAt(img: ImageData, x: number, t: number) {
-      column(t, H, col);
-      for (let y = 0; y < H; y++) {
-        const [r, g, b] = shade(col[y]);
-        for (let dx = 0; dx < dpr; dx++) {
-          const i = (y * img.width + x + dx) * 4;
-          img.data[i] = r; img.data[i + 1] = g; img.data[i + 2] = b; img.data[i + 3] = 255;
-        }
-      }
+    // 처음 화면: 큰돌고래 휘슬이 막 지나간 시점
+    let T = (cfg.clips[1]?.seg_end ?? 2) + 0.25; // 오른쪽 가장자리의 시각(s)
+    let raf = 0, last = 0, visible = true, paused = reduce.matches;
+    let strip: HTMLImageElement | null = null;
+    let scaled: HTMLCanvasElement | null = null;
+
+    function prepare() {
+      if (!strip) return;
+      scaled = document.createElement('canvas');
+      scaled.width = Math.round(loopW * dpr);
+      scaled.height = Math.round(cssH * (1 - cfg.pad) * dpr);
+      const c = scaled.getContext('2d')!;
+      c.imageSmoothingQuality = 'high';
+      c.drawImage(strip, 0, 0, scaled.width, scaled.height);
     }
 
     function resize() {
-      dpr = Math.min(2, Math.round(window.devicePixelRatio || 1));
+      dpr = Math.min(2, window.devicePixelRatio || 1);
       cssW = root.clientWidth; cssH = root.clientHeight;
-      W = cssW * dpr; H = cssH * dpr;
-      for (const c of [spec, ann]) { c.width = W; c.height = H; }
-      col = new Float32Array(H);
-      // 화면 전체를 미리 채움
-      const img = sctx.createImageData(W, H);
-      for (let px = 0; px < cssW; px++) {
-        const t = T - (cssW - 1 - px) / PX_PER_SEC;
-        drawColumnAt(img, px * dpr, t);
+      for (const c of [spec, ann]) { c.width = Math.round(cssW * dpr); c.height = Math.round(cssH * dpr); }
+      prepare();
+      draw();
+    }
+
+    // 화면 x(CSS px) ↔ 띠 시간(s): 오른쪽 끝 = T
+    const xOf = (tLoop: number, k: number) => cssW - (T - (tLoop + k * cfg.loop_sec)) * SPEED;
+
+    function draw() {
+      sctx.setTransform(1, 0, 0, 1, 0, 0);
+      sctx.fillStyle = '#15181a';
+      sctx.fillRect(0, 0, spec.width, spec.height);
+      if (scaled) {
+        const top = Math.round(cssH * cfg.pad * dpr);
+        const k0 = Math.floor((T - cssW / SPEED) / cfg.loop_sec);
+        for (let k = k0; k <= k0 + 2; k++) {
+          const x = xOf(0, k) * dpr;
+          if (x > spec.width || x + scaled.width < 0) continue;
+          sctx.drawImage(scaled, Math.round(x), top);
+        }
       }
-      sctx.putImageData(img, 0, 0);
-      lastCol = T;
       drawAnnotations();
+    }
+
+    function drawAnnotations() {
+      actx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      actx.clearRect(0, 0, cssW, cssH);
+      const k0 = Math.floor((T - cssW / SPEED) / cfg.loop_sec);
+      const f1 = '600 12px "IBM Plex Sans KR", system-ui, sans-serif';
+      const f2 = '400 11px "IBM Plex Sans KR", system-ui, sans-serif';
+      for (let k = k0; k <= k0 + 2; k++) {
+        for (const c of cfg.clips) {
+          const sx0 = xOf(c.seg_start, k), sx1 = xOf(c.seg_end, k);
+          if (sx1 < 0 || sx0 > cssW) continue;
+
+          // 나이퀴스트 주파수 (fs/2)
+          const nyq = c.fs / 2;
+          if (nyq < cfg.f_max) {
+            const y = Math.round(yOf(nyq)) + 0.5;
+            actx.globalAlpha = 1;
+            actx.strokeStyle = '#5d666c';
+            actx.setLineDash([3, 3]);
+            actx.lineWidth = 1;
+            actx.beginPath(); actx.moveTo(sx0, y); actx.lineTo(sx1, y); actx.stroke();
+            actx.setLineDash([]);
+            actx.font = f2; actx.fillStyle = '#7d868c'; actx.textBaseline = 'bottom';
+            const tl = `fs/2 ${hz(nyq)}`;
+            const tx = Math.min(sx1, cssW) - actx.measureText(tl).width - 6;
+            if (tx > sx0 + 2 && tx > 110) actx.fillText(tl, tx, y - 3);
+          }
+
+          // 신호가 화면 안으로 다 들어오면 주석 표시
+          const x0 = xOf(c.t0, k) - 3, x1 = xOf(c.t1, k) + 3;
+          const shown = cssW - 6 - x1;
+          if (shown < 0 || x1 < 0) continue;
+          const alpha = Math.min(1, shown / (SPEED * 0.35));
+          const y0 = Math.round(yOf(c.fmax)) - 3, y1 = Math.round(yOf(c.fmin)) + 3;
+          actx.globalAlpha = alpha;
+          actx.strokeStyle = MARK; actx.lineWidth = 1.5;
+          actx.strokeRect(Math.round(x0) + 0.5, y0 + 0.5, Math.round(x1 - x0), y1 - y0);
+
+          const l1 = `${c.name_ko} ${c.signal}`;
+          const l2 = `dur90 ${c.duration.toFixed(2)} s   f50 ${hz(c.f50)}   fpeak ${hz(c.fpeak)}   BW−3dB ${hz(c.bw3)}`;
+          actx.font = f1; const w1 = actx.measureText(l1).width;
+          actx.font = f2; const w2 = actx.measureText(l2).width;
+          const lw = Math.ceil(Math.max(w1, w2)) + 12, lh = 33;
+          let lx = Math.round(x0);
+          lx = Math.max(4, Math.min(lx, cssW - lw - 4));
+          let ly = y0 - lh;
+          if (ly < 2) ly = y1 + 2;
+          actx.fillStyle = MARK;
+          actx.fillRect(lx, ly, lw, lh);
+          actx.fillStyle = '#15181a'; actx.textBaseline = 'alphabetic';
+          actx.font = f1; actx.fillText(l1, lx + 6, ly + 14);
+          actx.font = f2; actx.fillText(l2, lx + 6, ly + 28);
+        }
+      }
+      actx.globalAlpha = 1;
     }
 
     function step(now: number) {
@@ -155,48 +199,9 @@ const pct = (f: number) => (PAD + (1 - PAD) * (1 - (Math.log(f) - Math.log(F0)) 
       const dt = last ? Math.min(0.1, (now - last) / 1000) : 0;
       last = now;
       T += dt;
-      const n = Math.floor((T - lastCol) * PX_PER_SEC);
-      if (n > 0) {
-        const shift = n * dpr;
-        sctx.drawImage(spec, -shift, 0);
-        const img = sctx.createImageData(shift, H);
-        for (let k = 0; k < n; k++) {
-          lastCol += 1 / PX_PER_SEC;
-          drawColumnAt(img, k * dpr, lastCol);
-        }
-        sctx.putImageData(img, W - shift, 0);
-      }
-      drawAnnotations();
+      if (T > 1e5) T -= Math.floor(T / cfg.loop_sec) * cfg.loop_sec;
+      draw();
       raf = requestAnimationFrame(step);
-    }
-
-    function drawAnnotations() {
-      actx.clearRect(0, 0, W, H);
-      actx.save();
-      actx.scale(dpr, dpr);
-      const mark = '#e8a62a';
-      actx.font = '500 12px "IBM Plex Sans KR", system-ui, sans-serif';
-      actx.textBaseline = 'bottom';
-      for (const e of eventsNear(lastCol)) {
-        if (lastCol < e.t1 + 0.15) continue;              // 사건이 끝나야 표시
-        const age = lastCol - (e.t1 + 0.15);
-        const alpha = Math.min(1, age / 0.5);
-        const x0 = cssW - (lastCol - e.t0 + 0.12) * PX_PER_SEC;
-        const x1 = cssW - (lastCol - e.t1 - 0.12) * PX_PER_SEC;
-        if (x1 < 0 || x0 > cssW) continue;
-        const y0 = yOf(e.fmax, cssH) - 4, y1 = yOf(e.fmin, cssH) + 4;
-        actx.globalAlpha = alpha;
-        actx.strokeStyle = mark;
-        actx.lineWidth = 1.5;
-        actx.strokeRect(Math.round(x0) + 0.5, Math.round(y0) + 0.5, Math.round(x1 - x0), Math.round(y1 - y0));
-        const tw = actx.measureText(e.label).width + 10;
-        const ly = Math.max(16, y0);
-        actx.fillStyle = mark;
-        actx.fillRect(Math.round(x0), ly - 16, tw, 16);
-        actx.fillStyle = '#15181a';
-        actx.fillText(e.label, Math.round(x0) + 5, ly - 2.5);
-      }
-      actx.restore();
     }
 
     function play() {
@@ -216,10 +221,14 @@ const pct = (f: number) => (PAD + (1 - PAD) * (1 - (Math.log(f) - Math.log(F0)) 
     let rt = 0;
     new ResizeObserver(() => { clearTimeout(rt); rt = window.setTimeout(resize, 120); }).observe(root);
 
+    const img = new Image();
+    img.decoding = 'async';
+    img.onload = () => { strip = img; prepare(); draw(); };
+    img.src = cfg.strip;
+
     resize();
     setPaused(paused);
-    // 웹폰트가 늦게 오면 주석 글자를 다시 그림
-    document.fonts?.ready.then(drawAnnotations);
+    document.fonts?.ready.then(() => draw());
   }
 
   document.querySelectorAll<HTMLElement>('[data-spectrogram]').forEach(init);
