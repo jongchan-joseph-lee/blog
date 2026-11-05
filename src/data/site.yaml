@@ -1,15 +1,15 @@
-# 사이트 전체에 쓰이는 기본 정보입니다. 이 파일만 고치면 홈 · 머리글 · 바닥글이 함께 바뀝니다.
+# 사이트 전체에 쓰이는 기본 정보입니다. 
 
 name_ko: 이종찬
 name_en: Jongchan Lee
-role: Underwater Acoustics(수중음향) 연구자
-affiliation: ㈜지오시스템리서치 시스템개발부 전임연구원 (GeoSystem Research Corporation)
+role: Underwater Acoustic Engineer (수중음향 시스템 엔지니어) 
+affiliation: ㈜지오시스템리서치 시스템개발부 전임연구원 (GeoSystem Research Corporation) (2022.05 - 현재)
 
-# 홈 첫 문단. 두세 문장이 적당합니다.
+# 홈 첫 문단. 
 intro: >-
   바다 속 소리로 해양생물과 해양환경을 이해하는 연구를 합니다.
   Passive Acoustic Monitoring(PAM, 수동음향 모니터링)을 중심으로
-  하이드로폰 계측부터 신호처리, AI 기반 탐지 · 분류, 시스템 통합과 현장 운용까지 다뤄 왔습니다.
+  하이드로폰 · 소나 계측부터 신호처리, AI 기반 탐지 · 분류, 시스템 통합과 현장 운용까지 다뤄 왔습니다.
 
 email: chani3218@gmail.com
 
@@ -21,7 +21,7 @@ links:
   - label: GitHub
     url: https://github.com/jongchan-joseph-lee
 
-# 홈의 "지금 하고 있는 일" 목록
+# "지금 하고 있는 일" 목록
 focus:
   - title: Marine Mammal Sound Classification(해양포유류 음향 분류)
     text: 공개 해양포유류 음향 DB에서 레퍼런스 모델을 녹음 출처를 분리한 조건으로 검증하고, 출처를 넘어 일반화되는 분류 단위를 찾고 있습니다.
