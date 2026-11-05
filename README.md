@@ -14,7 +14,7 @@
 |---|---|---|
 | 이름 · 소속 · 소개 문단 · 링크 · 이메일 · "지금 하고 있는 일" | `src/data/site.yaml` | YAML |
 | 연구 · 산업 과제 목록 | `src/data/work.yaml` | YAML |
-| 프로필(학력 · 경력 · 논문 · 발표 · 기술) | `src/content/pages/profile.md` | Markdown |
+| 첫 화면(프로필) 본문: 학력 · 경력 · 논문 · 발표 · 기술 | `src/content/pages/profile.md` | Markdown |
 | 공개 연구 프로젝트 글 | `src/content/projects/<폴더>/index.md` | Markdown |
 | 블로그 글 | `src/content/posts/` | Markdown |
 | 프로필 사진 | `public/images/profile.jpg` | 같은 이름으로 교체 |

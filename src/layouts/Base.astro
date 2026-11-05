@@ -58,7 +58,7 @@ const github = site.links.find((l) => l.label === 'GitHub');
       <div class="wrap">
         <a class="brand" href={url()}>{site.name_ko} <small>{site.name_en}</small></a>
         <nav class="nav" aria-label="주요 메뉴">
-          <a href={url('profile/')} aria-current={current('profile')}>프로필</a>
+          <a href={url()} aria-current={path === url().replace(/\/$/, '') ? 'page' : undefined}>프로필</a>
           <a href={url('projects/')} aria-current={current('projects')}>프로젝트</a>
           {posts.length > 0 && <a href={url('posts/')} aria-current={current('posts')}>글</a>}
           {github && <a href={github.url}>GitHub</a>}

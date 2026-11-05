@@ -1,81 +1,50 @@
 ---
+// 기본 화면 = 프로필
+// 소개 · 링크 · "지금 하고 있는 일"은 src/data/site.yaml, 본문은 src/content/pages/profile.md 에서 고칩니다.
 import Base from '../layouts/Base.astro';
 import Spectrogram from '../components/Spectrogram.astro';
-import { Image } from 'astro:assets';
-import { getCollection } from 'astro:content';
-import { site, work, period, url } from '../lib/site';
+import { getEntry, render } from 'astro:content';
+import { site, url } from '../lib/site';
 
-const projects = (await getCollection('projects'))
-  .filter((p) => !p.data.draft)
-  .sort((a, b) => a.data.order - b.data.order);
-const recentWork = work.slice(0, 5);
+const page = (await getEntry('pages', 'profile'))!;
+const { Content, headings } = await render(page);
+const toc = headings.filter((h) => h.depth === 2);
 ---
-<Base source="src/data/site.yaml">
+<Base description={page.data.description} source="src/content/pages/profile.md">
   <Spectrogram />
   <div class="wrap">
     <p class="band-note">합성 스펙트로그램 위에서 해양포유류 소리를 자동으로 찾아 표시(annotation)하는 모습을 그린 예시입니다. 실제 녹음은 아닙니다.</p>
+  </div>
 
-    <section class="intro">
-      <div>
-        <h1 class="name">{site.name_ko}<span class="name-en">{site.name_en}</span></h1>
-        <p class="role">{site.role}<span>{site.affiliation}</span></p>
-        <p class="lede">{site.intro}</p>
-        <ul class="links">
-          <li><a href={url('profile/')}>프로필 · 논문</a></li>
-          {site.links.map((l) => <li><a href={l.url}>{l.label}</a></li>)}
-          <li><a href={`mailto:${site.email}`}>이메일</a></li>
-        </ul>
-      </div>
-      <aside class="focus">
-        <h2>지금 하고 있는 일</h2>
+  <div class="wrap profile">
+    <aside class="profile-side">
+      <img src={url('images/profile.jpg')} alt={`${site.name_ko} 사진`} width="240" height="240" />
+      <h1>{site.name_ko}<small>{site.name_en}</small></h1>
+      <p>{site.role}<br />{site.affiliation}</p>
+      <ul>
+        <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+        {site.links.map((l) => <li><a href={l.url}>{l.label}</a></li>)}
+      </ul>
+      <nav class="profile-toc" aria-label="프로필 목차">
+        <a href="#focus">지금 하고 있는 일</a>
+        {toc.map((h) => <a href={`#${h.slug}`}>{h.text}</a>)}
+        <a href={url('projects/')}>프로젝트 페이지</a>
+      </nav>
+    </aside>
+
+    <div>
+      <p class="lede profile-lede">{site.intro}</p>
+
+      <section class="focus profile-focus" id="focus" aria-labelledby="focus-h">
+        <h2 id="focus-h">지금 하고 있는 일</h2>
         <dl>
-          {site.focus.map((f) => (<><dt>{f.title}</dt><dd>{f.text}</dd></>))}
+          {site.focus.map((f) => (<div><dt>{f.title}</dt><dd>{f.text}</dd></div>))}
         </dl>
-      </aside>
-    </section>
+      </section>
 
-    <section class="section" aria-labelledby="open-research">
-      <div class="section-head">
-        <h2 id="open-research">공개 연구</h2>
-        <a href={url('projects/')}>모든 프로젝트</a>
+      <div class="prose">
+        <Content />
       </div>
-      <p class="section-sub">공개 자료로 "평가 방식을 바꾸면 성능이 얼마나 달라지는가"를 확인한 개인 연구입니다. 코드와 결과는 모두 GitHub에 있습니다.</p>
-      {projects.map((p) => (
-        <article class="proj">
-          <a class="proj-fig" href={url(`projects/${p.id}/`)} tabindex="-1" aria-hidden="true">
-            <Image src={p.data.cover} alt="" widths={[480, 800]} sizes="(max-width: 860px) 100vw, 440px" />
-          </a>
-          <div>
-            <p class="proj-kind">{p.data.kind}</p>
-            <h3><a href={url(`projects/${p.id}/`)}>{p.data.title}</a></h3>
-            <p class="proj-sub">{p.data.subtitle}</p>
-            <p class="proj-body">{p.data.summary}</p>
-            <p class="proj-result">{p.data.result}</p>
-            <p class="proj-actions">
-              <a href={url(`projects/${p.id}/`)}>글 읽기</a>
-              <a href={p.data.repo}>저장소 보기</a>
-            </p>
-          </div>
-        </article>
-      ))}
-    </section>
-
-    <section class="section" aria-labelledby="work">
-      <div class="section-head">
-        <h2 id="work">연구 · 산업 과제</h2>
-        <a href={url('projects/#work-all')}>전체 {work.length}건 보기</a>
-      </div>
-      <ol class="timeline">
-        {recentWork.map((w) => (
-          <li>
-            <span class="t-year">{period(w)}</span>
-            <div>
-              <div class="t-title">{w.title}</div>
-              <div class="t-meta">{w.funder}</div>
-            </div>
-          </li>
-        ))}
-      </ol>
-    </section>
+    </div>
   </div>
 </Base>

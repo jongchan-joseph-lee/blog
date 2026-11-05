@@ -210,6 +210,10 @@ h1, h2, h3, h4 { font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; ma
 .profile .prose { margin-top: 0; font-family: var(--sans); font-size: 16px; line-height: 1.75; }
 .profile .prose h2:first-child { margin-top: 0; }
 .profile .prose ol li { margin-top: 0.7em; }
+.profile-lede { margin-top: 0; }
+.profile-focus { margin: 40px 0 64px; }
+.profile-focus dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; }
+@media (max-width: 860px) { .profile-focus dl { grid-template-columns: minmax(0, 1fr); } }
 
 /* posts list */
 .posts { list-style: none; padding: 0; margin: 0; }

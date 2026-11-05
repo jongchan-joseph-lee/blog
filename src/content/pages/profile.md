@@ -14,7 +14,7 @@ description: 이종찬(Jongchan Lee) — 학력, 경력, 논문, 학회 발표, 
 
 2022년부터 ㈜지오시스템리서치에서 해양포유류 수동음향 조사, 해양생물 실시간 음향 감시 · 경보 시스템,
 Ambient Noise(배경소음) 분석과 Sound Propagation Modeling(음파 전달 모델링), Microphone Array(마이크로폰 배열) 기반 음원 탐지 등
-연구 과제와 현장 업무를 수행하고 있습니다. 수행 과제는 [프로젝트](../projects/) 페이지에 정리했습니다.
+연구 과제와 현장 업무를 수행하고 있습니다. 수행 과제는 [프로젝트](projects/) 페이지에 정리했습니다.
 
 ## Research Interests (연구 관심)
 
