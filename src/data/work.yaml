@@ -16,7 +16,7 @@
 - start: 2025
   end: 2026
   title: Development of an Amphibious Rescue System for Inundation Disasters under Manned-Unmanned Vehicle
-  funder: 한국산업기술진흥원 (KIAT)
+  funder: 행정안전부 – 한국산업기술기획평가원 (KEIT)
   group: array
   role: Raspberry Pi 5 기반 4채널 Microphone Array(마이크로폰 배열) 구축, Python/Cython으로 저주파 잡음 제거 필터 설계, OpenAI Whisper(STT)와 MeloTTS(TTS)로 실시간 음성 탐지 구현
 

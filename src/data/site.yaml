@@ -6,9 +6,10 @@ role: Underwater Acoustic Engineer (수중음향 시스템 엔지니어)
 affiliation: ㈜지오시스템리서치 시스템개발부 전임연구원 (GeoSystem Research Corporation) (2022.05 - 현재)
 
 # 홈 첫 문단. 
-intro: >-
-  바⁠다 속 소⁠리⁠로 해⁠양⁠생⁠물⁠과 해⁠양⁠환⁠경⁠을 이⁠해⁠하기 위한 도⁠구⁠를 만들고 있습⁠니⁠다.<br>
-하⁠이⁠드⁠로⁠폰 · 소⁠나 계⁠측⁠부⁠터 신⁠호⁠처⁠리, AI 기⁠반 탐⁠지 · 분⁠류, 시⁠스⁠템 통⁠합⁠과 현⁠장 운⁠용⁠까⁠지 다⁠뤄 왔⁠습⁠니⁠다.
+# 줄을 바꾸려면 그냥 다음 줄에 쓰면 됩니다. 모든 줄은 앞에 띄어쓰기 2칸을 넣어 주세요.
+intro: |-
+  바다 속 소리로 해양생물과 해양환경을 이해하기 위한 도구를 만들고 있습니다.
+  하이드로폰 · 소나 계측부터 신호처리, AI 기반 탐지 · 분류, 시스템 통합과 현장 운용까지 다뤄 왔습니다.
 
 email: chani3218@gmail.com
 
@@ -23,11 +24,11 @@ links:
 # "지금 하고 있는 일" 목록
 focus:
   - title: Passive Acoustic Monitoring
-    text: 수⁠동⁠음⁠향 모⁠니⁠터⁠링 · 하⁠이⁠드⁠로⁠폰 계⁠측 · 해⁠양⁠포⁠유⁠류 탐⁠지 · 배⁠경⁠소⁠음 분⁠석 · 방위각 추정 · 잡음 제어 
+    text: 수동음향 모니터링 · 하이드로폰 계측 · 해양포유류 탐지 · 배경소음 분석 · 방위각 추정 · 잡음 제어 
   - title: Active Sonar Processing
-    text: 능⁠동 소⁠나 신⁠호⁠처⁠리 · 광⁠대⁠역 분⁠할⁠빔 소⁠나 · 실⁠시⁠간 후⁠방⁠산⁠란 처⁠리 via Buoy System & USV System
+    text: 능동 소나 신호처리 · 광대역 분할빔 소나 · 실시간 후방산란 처리 via Buoy System & USV System
   - title: AI Detection & Classification
-    text: AI 탐⁠지 · 분⁠류 · STT · 오⁠디⁠오 표⁠현 모⁠델 평⁠가
+    text: AI 탐지 · 분류 · STT · 오디오 표현 모델 평가
 
 # GitHub 저장소 (각 페이지 하단 "GitHub에서 수정" 링크에 쓰입니다)
 repo: jongchan-joseph-lee/blog

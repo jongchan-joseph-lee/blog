@@ -14,8 +14,10 @@ export interface Work {
   title: string; funder: string; group: string; role: string;
 }
 
-export const site = load(siteRaw) as Site;
-export const work = (load(workRaw) as Work[]) ?? [];
+// README 등에서 복사해 온 보이지 않는 문자(U+2060)는 지우고 읽습니다
+const clean = (s: string) => s.replace(/\u2060/g, '');
+export const site = load(clean(siteRaw)) as Site;
+export const work = (load(clean(workRaw)) as Work[]) ?? [];
 
 export const workGroups: Record<string, string> = {
   pam: 'Passive Acoustic Monitoring(수동음향 모니터링)',
