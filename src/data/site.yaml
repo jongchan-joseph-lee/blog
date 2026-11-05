@@ -29,8 +29,6 @@ focus:
     text: 연속 녹음 흐름 속에서 생물음향 이벤트를 실시간으로 찾아 표시하는 기술을 목표로 합니다.
   - title: Noise Understanding(잡음 이해)
     text: 생물음향뿐 아니라 선박 · 환경 잡음까지 분류하고 해석하는 것이 장기 목표입니다.
-  - title: Education & Outreach(교육 · 대중 소통)
-    text: 해양 연구장비 활용 교육(KOEM)에서 Passive Hydrophone 사용법과 Python · Julia 기반 PAM 분석법을 강의했고, 이를 일반 대중을 위한 해양 음향 교육 자료로 넓혀 가려 합니다.
 
 # GitHub 저장소 (각 페이지 하단 "GitHub에서 수정" 링크에 쓰입니다)
 repo: jongchan-joseph-lee/jlee_blog
