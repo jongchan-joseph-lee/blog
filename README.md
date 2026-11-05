@@ -29,7 +29,7 @@
   end: 2027            # 진행 중이면 비워 두기
   title: Project title in English
   funder: 발주 기관
-  group: pam           # pam | realtime | array | modeling
+  group: pam           # pam | realtime | array | modeling | education
   role: 맡은 역할 한두 문장
 ```
 

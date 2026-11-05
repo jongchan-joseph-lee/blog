@@ -3,7 +3,7 @@
 #
 # start / end : 시작 · 종료 연도 (진행 중이면 end를 비워 두세요)
 # period      : 화면에 보일 기간 표기 (비우면 start–end로 표시)
-# group       : pam | realtime | array | modeling  (프로젝트 페이지의 묶음)
+# group       : pam | realtime | array | modeling | education  (프로젝트 페이지의 묶음)
 # role        : 내가 맡은 역할 (한두 문장)
 
 - start: 2026
@@ -19,6 +19,13 @@
   funder: 한국산업기술진흥원 (KIAT)
   group: array
   role: Raspberry Pi 5 기반 4채널 Microphone Array(마이크로폰 배열) 구축, Python/Cython으로 저주파 잡음 제거 필터 설계, OpenAI Whisper(STT)와 MeloTTS(TTS)로 실시간 음성 탐지 구현
+
+- start: 2025
+  end: 2026
+  title: 해양 연구장비 활용 교육 · 자격검정 과정 (Marine Research Equipment Training & Certification Program)
+  funder: 해양환경공단 (KOEM)
+  group: education
+  role: 해양포유류 연구장비(Passive Hydrophone) 사용법과 Python · Julia 기반 PAM(수동음향 모니터링) 분석법 교육 진행
 
 - start: 2025
   end: 2025
@@ -51,7 +58,7 @@
 - start: 2024
   end: 2024
   title: Acoustic survey of finless porpoise habitat in the inland waters of the west coast
-  funder: Korea Marine Environment Technology Institute
+  funder: 국립수산과학원 고래연구소 (Cetacean Research Institute, NIFS)
   group: pam
   role: 서해 내만의 얕은 해역에서 상괭이 Passive Acoustic Detection, Classification and Localization(DCL, 탐지 · 분류 · 위치추정)
 
