@@ -7,9 +7,8 @@ affiliation: ㈜지오시스템리서치 시스템개발부 전임연구원 (Geo
 
 # 홈 첫 문단. 
 intro: >-
-  바다 속 소리로 해양생물과 해양환경을 이해하는 연구를 합니다.
-  Passive Acoustic Monitoring(PAM, 수동음향 모니터링)을 중심으로
-  하이드로폰 · 소나 계측부터 신호처리, AI 기반 탐지 · 분류, 시스템 통합과 현장 운용까지 다뤄 왔습니다.
+  바⁠다 속 소⁠리⁠로 해⁠양⁠생⁠물⁠과 해⁠양⁠환⁠경⁠을 이⁠해⁠하기 위한 도⁠구⁠를 만들고 있습⁠니⁠다.<br>
+하⁠이⁠드⁠로⁠폰 · 소⁠나 계⁠측⁠부⁠터 신⁠호⁠처⁠리, AI 기⁠반 탐⁠지 · 분⁠류, 시⁠스⁠템 통⁠합⁠과 현⁠장 운⁠용⁠까⁠지 다⁠뤄 왔⁠습⁠니⁠다.
 
 email: chani3218@gmail.com
 
@@ -23,12 +22,12 @@ links:
 
 # "지금 하고 있는 일" 목록
 focus:
-  - title: Marine Mammal Sound Classification(해양포유류 음향 분류)
-    text: 공개 해양포유류 음향 DB에서 레퍼런스 모델을 녹음 출처를 분리한 조건으로 검증하고, 출처를 넘어 일반화되는 분류 단위를 찾고 있습니다.
-  - title: Real-time Bioacoustic Annotation(실시간 생물음향 주석)
-    text: 연속 녹음 흐름 속에서 생물음향 이벤트를 실시간으로 찾아 표시하는 기술을 목표로 합니다.
-  - title: Noise Understanding(잡음 이해)
-    text: 생물음향뿐 아니라 선박 · 환경 잡음까지 분류하고 해석하는 것이 장기 목표입니다.
+  - title: Passive Acoustic Monitoring
+    text: 수⁠동⁠음⁠향 모⁠니⁠터⁠링 · 하⁠이⁠드⁠로⁠폰 계⁠측 · 해⁠양⁠포⁠유⁠류 탐⁠지 · 배⁠경⁠소⁠음 분⁠석 · 방위각 추정 · 잡음 제어 
+  - title: Active Sonar Processing
+    text: 능⁠동 소⁠나 신⁠호⁠처⁠리 · 광⁠대⁠역 분⁠할⁠빔 소⁠나 · 실⁠시⁠간 후⁠방⁠산⁠란 처⁠리 via Buoy System & USV System
+  - title: AI Detection & Classification
+    text: AI 탐⁠지 · 분⁠류 · STT · 오⁠디⁠오 표⁠현 모⁠델 평⁠가
 
 # GitHub 저장소 (각 페이지 하단 "GitHub에서 수정" 링크에 쓰입니다)
 repo: jongchan-joseph-lee/blog
