@@ -10,59 +10,75 @@ result: "녹음 출처를 분리하자 종 균형정확도가 0.64–0.76에서 
 repo: "https://github.com/jongchan-joseph-lee/marine-mammal-classifier-benchmark"
 cover: "./pam_balanced_accuracy.png"
 coverAlt: "표현별 균형정확도: 클립 무작위 분할과 녹음 출처 분리 비교"
-updated: 2026-11-05
+updated: 2026-11-08
 ---
 
-공개 해양포유류 음향 DB에서 보고된 높은 종 분류 성능이 **녹음 출처를 분리한 평가(Source-disjoint Split)** 에서도 유지되는지,
-그리고 출처를 넘어 **어떤 수준의 정보가 일반화되는지**를 검토한 개인 연구입니다.
+Watkins 해양포유류 음향 DB에서 사전학습 오디오 모델의 종 분류 성능을 녹음 출처 분리(source-disjoint) 조건으로 다시 평가한 프로젝트입니다.
 
-## 왜 이 질문인가
+## Overview
 
-Watkins Marine Mammal Sound Database(WHOI)는 해양포유류 음향 표현을 비교할 때 가장 자주 쓰이는 공개 아카이브입니다.
-최근 연구들은 이 DB에서 높은 종 분리 성능을 보고했지만, DB 구조에는 결과 해석을 어렵게 하는 두 가지 특징이 있습니다.
+- **문제**: Watkins DB에서 높은 종 분류 성능을 보고한 선행연구들은 대부분 클립 단위 무작위 분할로 평가했습니다. 이 경우 같은 녹음에서 잘린 클립이 학습과 시험에 함께 들어갑니다.
+- **방법**: 5개 표현(AST, VGGish, EfficientNet-B3, MFCC, 물리 특징 51개) + linear probe로 무작위 분할과 녹음 출처 분리 분할을 비교하고, 오디오 없이 메타데이터(샘플레이트 · 길이)만 쓴 기준선과 대조했습니다.
+- **결과**: 녹음 출처를 분리하면 종 분류 균형정확도(BA)가 0.21–0.33으로 낮아져 메타데이터 기준선(0.24)과 비슷해집니다.
 
-- **Data Leakage(데이터 누수)** — 한 종의 클립이 소수의 녹음에서 잘려 나온 경우가 많아, 클립을 무작위로 나누면 같은 녹음이 학습과 시험에 함께 들어갈 수 있습니다.
-- **Recording-condition Confounding(녹음 조건 교란)** — 녹음마다 대상 종에 맞춘 샘플레이트로 디지털화되어, 분류기가 소리 대신 녹음 조건으로 정답을 맞힐 수 있습니다(Shortcut Learning).
+![Data selection, feature extractors and evaluation](./pam_study_design.png)
 
-또한 실제 PAM 도구는 종보다 **Signal Type(신호 유형: click · whistle · moan 등)** 단위로 구성되는 경우가 많아,
-종보다 거친 수준의 기술이 일반화의 단위가 될 수 있는지도 함께 확인했습니다.
+<details>
+<summary>특징 추출기별 처리 예시</summary>
 
-## 자료와 방법
+![One right whale clip passed through each feature extractor](./pam_extractor_example.png "북대서양긴수염고래 moan 클립 1개의 입력, 처리 구조, 출력 벡터")
 
-- **자료**: Earth Species Project 공개본 v0.1.0 — 13,693 클립 → 선별 10,694 클립(36종, 녹음 출처 49개) → 표본 3,539 클립
-- **표현(Representation)**: 사전학습 모델을 고정해 쓴 AST · VGGish · EfficientNet-B3, 직접 설계한 Physical Descriptors(물리 특징) 51개, MFCC, 그리고 오디오를 읽지 않는 기준선(샘플레이트 · 길이)
-- **분류**: 표준화 → PCA(≤64) → Logistic Regression(Linear Probe), 과제는 분류군(3) · 콜 타입(7) · 종(10)
-- **분할 비교**: 클립 무작위 5-fold vs 녹음 출처 분리 7-fold, 출처 단위 재표본 95% 신뢰구간
+</details>
 
-![Study design: data selection, feature extractors and evaluation](./pam_study_design.png "자료 선별, 표현 추출기, 평가 구조 (원고 Figure 1)")
+## Results
 
-## 주요 결과
+| Balanced accuracy | 무작위 분할 | 녹음 출처 분리 |
+|---|---|---|
+| 종 (10) | 0.64–0.76 | 0.21–0.33 (기준선 0.24) |
+| 콜 타입 (7) | 0.55–0.74 | 0.29–0.48 |
+| 분류군 (3) | 0.82–0.93 | 0.63–0.80 |
 
-| 질문 | 관찰 결과 |
-|---|---|
-| 무작위 분할에서의 분리 | 종 10개 Balanced Accuracy(BA, 균형정확도) 0.64–0.76. 선행연구 방식의 평가에서도 보고치와 비슷한 수준이 재현됨 |
-| 녹음 출처를 분리하면 | 종 BA 0.21–0.33(우연 0.10)으로 하락, 오디오를 읽지 않는 기준선 0.24와 비슷한 수준. 콜 타입 0.55–0.74 → 0.29–0.48, 분류군 0.82–0.93 → 0.63–0.80 |
-| 이웃 구조 | 10-최근접 이웃 중 같은 종 비율 55–82%, 다른 출처에서만 이웃을 고르면 7–13% |
-| DB 구조 | 36종 중 18종이 단일 녹음 출처, 수염고래 클립의 98%가 16 kHz 미만 샘플레이트(이빨고래 0.1%) |
-| 출처를 넘어 남는 것 (탐색적) | 40 kHz 샘플레이트 계열 안에서 신호 유형 3분류(tonal · impulsive · pulsed) BA 0.48–0.69, 기준선 0.34 |
-| 물리량과 대역 (탐색적) | 단일 물리량으로 tonal vs impulsive AUROC 0.95(음조 집중도). 신호 대역 8 kHz 초과는 98–100% 이빨고래, 1 kHz 미만 tonal · pulsed는 85–87% 수염고래 |
+![Balanced accuracy under random and source-disjoint splits](./pam_balanced_accuracy.png)
 
-![Balanced accuracy under random and source-disjoint splits](./pam_balanced_accuracy.png "표현별 균형정확도. 빈 원: 클립 무작위 분할, 채운 원: 녹음 출처 분리(95% 신뢰구간), 점선: 출처 분리 기준선 (원고 Figure 3)")
+<details>
+<summary>임베딩 분포 (UMAP · t-SNE)</summary>
 
-### 원고 이후: AST 부분 미세조정(Partial Fine-tuning)
+![UMAP of VGGish vectors](./pam_fig4_umap.png "VGGish 표현 UMAP (3,539 클립)")
 
-같은 3,539 클립을 녹음 출처 분리 5-fold로 나누고 AST 마지막 블록 일부와 분류층을 학습했습니다.
-수염고래 재현율은 0.827 → 0.889, 이빨고래는 0.942 → 0.973으로 올랐지만 기각류는 0.583 → 0.394로 떨어져,
-전체 균형정확도는 0.784 → 0.752로 낮아졌습니다. **전체 개선이 아니라 분류군 간 성능 이동**으로 해석합니다.
+![t-SNE of VGGish vectors](./pam_fig4b_tsne.png "VGGish 표현 t-SNE — 종별 색, 분류군별 색")
 
-## 해석과 한계
+</details>
 
-- 이 DB에서 클립 무작위 분할 점수는 **소리 자체보다 같은 녹음을 다시 알아보는 능력**을 상당 부분 반영하는 것으로 보입니다. 특정 모델의 결함이 아니라 아카이브 구조와 분할 방식의 성질입니다.
-- 종 이름보다 **신호 유형과 주파수 대역** 수준이 출처를 넘어 더 안정적으로 관찰되었습니다. 다만 이 부분은 첫 결과를 본 뒤 정의한 탐색적 분석입니다.
-- 원고는 *신호 구간 검출 → 물리량 측정 → 신호 유형 · 대역 기반 분류군 확률* 구조를 설계 요건으로 제안하지만, **구현 · 검증하지 않은 제안**입니다.
-- 검증 범위는 Watkins DB 내부까지입니다. 독립 외부 자료, 연속 녹음, 비생물 신호, 실해역 운용은 다루지 않았습니다.
+- 녹음 출처가 달라져도 신호 유형(tonal · impulsive · pulsed)과 주파수 대역 기준의 구분은 유지되었습니다 (탐색적 분석).
 
-## 다음 단계
+<details>
+<summary>신호 유형 · 물리량 · 주파수 대역</summary>
 
-신호 유형 정의를 고정한 채 **다른 아카이브와 연속 녹음**에서 다시 평가하는 것이 다음 단계입니다.
-이 결과는 연속 녹음 흐름에서 생물음향을 실시간으로 주석(annotation)하는 도구를 만들 때, 어떤 단위로 라벨을 설계할지 정하는 출발점이 됩니다.
+![Balanced accuracy for three signal types](./pam_fig5_signal_type.png "신호 유형 3분류 균형정확도 (탐색적)")
+
+![Distributions of single physical descriptors](./pam_fig6_physical_quantities.png "단일 물리량 분포 (탐색적)")
+
+![Taxon composition by signal type and frequency band](./pam_fig7_taxon_by_band.png "신호 유형 × 주파수 대역별 분류군 구성 (탐색적)")
+
+</details>
+
+- AST 부분 미세조정: 전체 BA 0.784 → 0.752. 수염고래 · 이빨고래 재현율은 오르고 기각류는 내려갔습니다 ([결과](https://github.com/jongchan-joseph-lee/marine-mammal-classifier-benchmark/blob/main/results/ast_finetune_results.json)).
+
+## Dataset
+
+- [Watkins Marine Mammal Sound Database](https://whoicf2.whoi.edu/science/B/whalesounds/index.cfm) (WHOI), Earth Species Project 공개본 v0.1.0
+- 10,694 클립 (36종, 녹음 출처 49개) → 평가 표본 3,539 클립
+- 원음은 저장소에 포함하지 않습니다.
+
+<details>
+<summary>자료 구조</summary>
+
+![Species by number of recording sources and sampling-rate family by taxon](./pam_fig2_data_structure.png "종별 녹음 출처 수, 분류군별 샘플레이트 구성")
+
+</details>
+
+## Limitations
+
+- Watkins DB 내부 평가입니다. 외부 자료, 연속 녹음, 실해역 운용은 다루지 않았습니다.
+- 녹음 출처는 메타데이터(지역 + 연도)로 정한 근사 단위입니다.
+- 신호 유형 분석은 첫 결과 이후 정의한 탐색적 분석입니다.

@@ -10,64 +10,58 @@ result: "처음 보는 연도에서 YOLOv8n 객체 재현율 78.1%(화면당 오
 repo: "https://github.com/jongchan-joseph-lee/sss-mine-detection-benchmark"
 cover: "./sss_detection_froc.png"
 coverAlt: "시험 연도 FROC 곡선과 탐지 예시"
-updated: 2026-11-05
+updated: 2026-11-08
 ---
 
-공개 Side-Scan Sonar(SSS, 측면주사 소나) 영상에서 **Mine-like Object(기뢰유사물체) 탐지기와 패치 분류기를 각각 평가**하고,
-자료의 중복 장면과 촬영 연도 변화가 평가 결과에 미치는 영향을 검토한 개인 연구입니다.
-영상 기반 물리 특징(Highlight–Shadow, 하이라이트–그림자)과 AI 모델(YOLOv8n · DINOv2)을 같은 분할 규약에서 비교했습니다.
+공개 측면주사 소나(Side-Scan Sonar, SSS) 영상에서 기뢰유사물체(mine-like object) 탐지기와 패치 분류기를 촬영 연도 분할 조건으로 평가한 프로젝트입니다.
 
-## 배경
+## Overview
 
-측면주사 소나 영상에서 기뢰유사물체는 해저면보다 밝은 **Highlight(하이라이트)** 와 그 뒤의 **Acoustic Shadow(음향 그림자)** 로 나타납니다.
-Santos et al.(2024, *Data in Brief*)이 공개한 AUV 측면주사 영상(Gavia AUV · Marine Sonic 900/1800 kHz, JPEG 1,170장, MILCO · NOMBO 라벨)은 이 문제를 공개 자료로 다룰 수 있는 드문 자료입니다.
+- **문제**: 공개 AUV 측면주사 영상 자료에는 같은 장면의 축소 복사본이 많고(1,170장 중 417쌍), 연도별 물체 구성이 크게 달라 이미지 단위 무작위 분할에서는 성능이 과대평가될 수 있습니다.
+- **방법**: 중복 장면을 점검한 뒤 공식 연도 분할(학습 2015 · 2017 · 2021 → 시험 2010 · 2018)로 평가했습니다. 탐지는 고전 정합필터와 YOLOv8n, 분류는 하이라이트–그림자 물리 특징과 DINOv2를 비교했습니다.
+- **결과**: 처음 보는 연도에서 YOLOv8n의 객체 재현율은 78.1%(화면당 오경보 4건), 정합필터는 4.3%(1건)였습니다. 연도가 바뀔 때 분류 성능 하락은 물리 특징(0.04)이 DINOv2(0.15)보다 작았습니다.
 
-자료를 먼저 점검해 보니 평가에 영향을 줄 수 있는 구조가 있었습니다.
+![Side-scan frame, across-track highlight-shadow profiles and oriented patches](./sss_highlight_shadow.png)
 
-- 같은 장면이 크기만 다르게 두 번 내보내진 **축소 복사본**이 많음 — 1,170장 중 중복 417쌍, 고유 장면 753개
-- 촬영 연도별 물체 수와 구성이 크게 다르고, 물체가 매우 작음(1024 px 기준 폭 수십 px)
+## Results
 
-## 방법
-
-1. **Data Screening(자료 점검)** — 고역통과 영상 상관(r > 0.95)으로 중복 장면 검출
-2. **Preprocessing(전처리)** — 그레이스케일 변환, 1024 px 통일, 수주 구간(nadir) 검출, 횡방향 이득 정규화
-3. **Physical Features(물리 특징)** — 표적 중심 횡방향 단면의 하이라이트–그림자 대비
-4. **Detection(탐지)** — 고전 Matched Filter(정합필터) 기준선 vs YOLOv8n (320 px 타일 학습 → 1024 px 전체 화면 탐지)
-5. **Patch Classification(패치 분류)** — MILCO · NOMBO · 해저 배경 3분류: 물리 특징 + 로지스틱 회귀, DINOv2 고정 특징, DINOv2 미세조정
-6. **Evaluation Protocol(평가 규약)** — 공식 연도 분할(학습 2015 · 2017 · 2021 → 시험 2010 · 2018)을 기본으로, 이미지 · 장면 분할은 진단용 비교 조건. 탐지는 FROC · mAP@0.5, 분류는 macro F1
-
-## 주요 결과
-
-| 항목 | 결과 | 조건 |
+| 탐지 (시험 연도 2010 · 2018) | 재현율 @ 화면당 오경보 1건 | 재현율 @ 4건 |
 |---|---|---|
-| YOLOv8n 탐지 | 객체 재현율 **59.6%** (화면당 오경보 1건), **78.1%** (4건), mAP@0.5 0.101 | 시험 연도 578화면 · 정답 114개 |
-| 고전 정합필터 탐지 | 객체 재현율 **4.3%** (화면당 오경보 1건) | 같은 시험 연도, 정답 115개 |
-| 패치 3분류, 연도 분할 | 물리 특징 macro F1 **0.679**, DINOv2 고정 0.606, DINOv2 미세조정 0.645 | 정답 위치 패치 1,270개 |
-| 장면 → 연도 분할 하락폭 | 물리 특징 0.040, DINOv2 고정 특징 0.146 | 같은 패치 분류 실험 |
-| 하이라이트–그림자 대비 | 물체 vs 해저 AUROC **0.830**, MILCO vs NOMBO 0.513 | 단일 특징, 분류기 없음 |
+| YOLOv8n | 59.6% | 78.1% |
+| 고전 정합필터 | 4.3% | — |
 
-![FROC curves and detection examples on test years](./sss_detection_froc.png "시험 연도(2010 · 2018) FROC와 탐지 예시. 정합필터는 정답 115개, YOLOv8n은 114개 기준. 자료: Santos et al. 2024 (CC BY 4.0)")
+![FROC curves for YOLOv8n and the classical matched filter on test years](./sss_detection_froc.png)
 
-**분할 방식별 패치 분류 macro F1**
-
-| 모델 | 이미지 단위 (진단용) | 장면 단위 | 연도 분할 |
+| 패치 3분류 macro F1 | 이미지 분할 | 장면 분할 | 연도 분할 |
 |---|---|---|---|
 | 물리 특징 + 로지스틱 회귀 | 0.734 | 0.719 | 0.679 |
 | DINOv2 고정 특징 + 선형 분류기 | 0.814 | 0.751 | 0.606 |
-| DINOv2 마지막 4블록 미세조정 | — | — | 0.645 |
+| DINOv2 미세조정 | — | — | 0.645 |
 
-![Macro F1 by split and confusion matrix on the year split](./sss_classification_splits.png "분할별 3분류 macro F1과 연도 분할 혼동 행렬 (정답 위치 패치 조건)")
+<details>
+<summary>분할별 분류 결과 · 혼동 행렬</summary>
 
-## 고찰
+![Three-class macro F1 by evaluation split and year-split confusion matrices](./sss_classification_splits.png "분할별 3분류 macro F1과 연도 분할 혼동 행렬 (정답 위치 패치 조건)")
 
-- **자료 중복은 분류 점수를 높게 보이게 할 수 있습니다.** DINOv2 고정 특징은 이미지 단위 0.814 → 장면 단위 0.751 → 연도 분할 0.606으로 낮아졌습니다. 이 자료에서는 장면 · 연도를 분리한 평가를 기본으로 두는 것이 타당하다고 판단했습니다.
-- **연도가 바뀔 때 물리 특징 모델의 하락이 작았습니다.** 다만 한 번의 연도 분할 결과이므로, 물리 특징이 일반적으로 더 강건하다는 결론으로 일반화하지 않습니다.
-- **하이라이트–그림자는 물체–배경 구분 단서이지만 물체 종류 구분력은 약했습니다.** 물체 종류 구분에는 모양 · 크기 · 질감 같은 다른 정보가 필요해 보입니다.
-- **탐지 단계가 전체 성능의 출발점입니다.** 분류 성능은 정답 위치 패치에서 잰 값이므로, 탐지에서 놓친 물체는 분류 단계에서 되찾을 수 없습니다.
+</details>
 
-## 한계와 남은 질문
+- 하이라이트–그림자 대비는 물체와 해저 배경을 구분했지만(AUROC 0.830), 물체 종류(MILCO vs NOMBO) 구분력은 낮았습니다(0.513).
+- 결과 수치: [`src/b3_yolo.json`](https://github.com/jongchan-joseph-lee/sss-mine-detection-benchmark/blob/main/src/b3_yolo.json), [`src/b2_results.json`](https://github.com/jongchan-joseph-lee/sss-mine-detection-benchmark/blob/main/src/b2_results.json), [`src/b3_patch.json`](https://github.com/jongchan-joseph-lee/sss-mine-detection-benchmark/blob/main/src/b3_patch.json) · 결과 리포트: [`docs/milco-report.html`](https://github.com/jongchan-joseph-lee/sss-mine-detection-benchmark/blob/main/docs/milco-report.html)
 
-- CPU로 학습한 소형 모델(YOLOv8n, 25 epoch)이며, 입력은 원시 신호 · 이득 정보가 없는 JPEG 영상입니다.
-- 분류는 정답 위치 패치 조건의 결과이며, **탐지 → 분류 2단 연계 성능은 아직 측정하지 않았습니다.**
-- 한 자료(한 장비 · 해역 계열)의 결과입니다. 다른 해역 · 장비, 실제 기뢰 식별, 실해역 운용은 검증하지 않았습니다.
-- 남은 질문: 탐지 후보를 분류기로 재판정하면 오경보가 얼마나 줄고 누락은 얼마나 늘어나는가? 원시 신호에 접근하면 영상 이전 단계에서 표적을 더 잘 찾을 수 있는가?
+## Dataset
+
+- Santos et al. 2024, *Data in Brief* (CC BY 4.0) — Gavia AUV · Marine Sonic 900/1800 kHz, JPEG 1,170장(고유 장면 753개), MILCO · NOMBO 라벨
+- 원자료는 저장소에 포함하지 않으며 `src/download_data.sh`로 받습니다.
+
+<details>
+<summary>자료 점검 (중복 장면 · 연도별 구성)</summary>
+
+![Objects per year, duplicated scene exports and box sizes](./sss_data_diagnosis.png "연도별 고유 물체 수, 축소 복사본 예시, 표적 크기")
+
+</details>
+
+## Limitations
+
+- CPU로 학습한 소형 모델(YOLOv8n, 25 epoch)이며, 입력은 원시 신호가 아닌 JPEG 영상입니다.
+- 분류는 정답 위치 패치 조건의 결과입니다. 탐지 → 분류 연계 성능은 측정하지 않았습니다.
+- 한 자료(한 장비 · 해역 계열)의 결과입니다.
