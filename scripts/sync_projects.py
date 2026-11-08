@@ -1,9 +1,11 @@
 """
 Sync project posts from the repositories' README.md.
 
-  python scripts/sync_projects.py <path/to/repos>      # repos cloned side by side (folder names below)
+  python scripts/sync_projects.py <path/to/repos>          # refresh figures only (posts are written by hand)
+  python scripts/sync_projects.py <path/to/repos> --body   # also replace the post body with the README
 
-For each project the README body replaces the post body (front matter is kept), with:
+Figures referenced in each README are copied next to the post (prefixed, max 1600 px wide).
+With --body the README body replaces the post body (front matter is kept), with:
   - <p align="center"><img src=".." alt=".."></p> (+ optional <sub> caption) and ![alt](path) -> ![alt](./prefix_name.png "caption")
   - figures copied next to the post with a prefix; figures no longer referenced are removed
   - relative links -> absolute GitHub links (blob for files, tree for folders)
@@ -67,12 +69,16 @@ def main(root):
         old = open(post, encoding="utf-8").read()
         fm = old[: old.index("\n---", 3) + 5]
         body, used = convert(os.path.join(repo_dir, "README.md"), repo_dir, slug_dir, gh, prefix)
-        open(post, "w", encoding="utf-8").write(fm + "\n" + body)
-        for f in os.listdir(slug_dir):
-            if f.endswith(".png") and f not in used and f.startswith(prefix):
-                os.remove(os.path.join(slug_dir, f))
+        if BODY:
+            open(post, "w", encoding="utf-8").write(fm + "\n" + body)
+            for f in os.listdir(slug_dir):
+                if f.endswith(".png") and f not in used and f.startswith(prefix):
+                    os.remove(os.path.join(slug_dir, f))
         print(slug, len(used), "figures")
 
 
+BODY = "--body" in sys.argv
+
 if __name__ == "__main__":
-    main(sys.argv[1] if len(sys.argv) > 1 else "..")
+    args = [a for a in sys.argv[1:] if a != "--body"]
+    main(args[0] if args else "..")

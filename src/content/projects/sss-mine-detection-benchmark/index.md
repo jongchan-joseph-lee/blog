@@ -13,28 +13,59 @@ coverAlt: "원본 · 증강 학습의 시험 연도 FROC와 물체 크기별 Pd"
 updated: 2026-11-09
 ---
 
-공개 측면주사 소나(Side-Scan Sonar, SSS) 영상에서 기뢰유사물체(mine-like object) 탐지기와 패치 분류기를 촬영 연도 분할 조건으로 평가한 프로젝트입니다.
+공개 측면주사 소나(Side-Scan Sonar, SSS) 영상에서 기뢰유사물체 탐지기를 촬영 연도 분할로 평가하고 개선한 프로젝트입니다.
 
-## Overview
+![Pipeline: year split, training with augmentation, sliced inference, optional cascade, test-year evaluation](./sss_pipeline.png "처리 흐름: 연도 분할 → 학습(증강) · 시험(분할 추론) · 검증(운영점) → 평가")
 
-- **문제**: 공개 AUV 측면주사 영상 자료에는 같은 장면의 축소 복사본이 많고(1,170장 중 417쌍), 연도별 물체 구성이 크게 달라 이미지 단위 무작위 분할에서는 성능이 과대평가될 수 있습니다.
-- **방법**: 중복 장면을 점검한 뒤 공식 연도 분할(학습 2015 · 2017 · 2021 → 시험 2010 · 2018)로 평가했습니다. 탐지는 고전 정합필터와 YOLOv8n, 분류는 하이라이트–그림자 물리 특징과 DINOv2를 비교했습니다.
-- **결과**: 처음 보는 연도에서 YOLOv8n의 Pd는 78.1%(영상당 오경보 4건), 정합필터는 4.3%(1건)였습니다. 연도가 바뀔 때 분류 성능 하락은 물리 특징(0.04)이 DINOv2(0.15)보다 작았습니다.
-- **연계**: YOLO 후보를 물리 특징 분류기로 다시 판정하면 영상당 오경보 1건 기준 Pd가 59.6%에서 70.2%로 올랐습니다.
-- **개선**: 30–50 px 물체에 맞춘 증강으로 영상당 오경보 4건 기준 Pd가 78.1%에서 87.7%(분할 추론)로 올랐습니다.
+| 항목 | 내용 |
+|---|---|
+| 자료 | Santos et al. 2024 · AUV SSS JPEG 1,170장 (고유 장면 753) · MILCO / NOMBO |
+| 분할 | 학습 2015 · 2017 · 2021 → 시험 2010 · 2018 (578장, 물체 114) |
+| 탐지기 | YOLOv8n + 크기 맞춤 증강 + 분할 추론 |
+| 결과 | Pd 78.1% → 87.7% (영상당 오경보 4건) |
 
-![Pipeline: data screening, year split, training with augmentation, sliced inference, optional cascade, test-year evaluation](./sss_pipeline.png)
+## 탐지
 
-## Results
+![Test-year FROC and recall by object size for original and augmented training](./sss_augmentation_froc.png "시험 연도 FROC와 물체 크기별 Pd")
 
-| 탐지 (시험 연도 2010 · 2018) | Pd @ 영상당 오경보 1건 | Pd @ 4건 |
+| Pd @ 영상당 오경보 | 0.5 | 1 | 4 | 8 | 30–50 px @ 4 |
+|---|---|---|---|---|---|
+| 정합필터 (고전) | — | 4.3% | — | — | — |
+| YOLOv8n | 48.2% | 59.6% | 78.1% | 78.9% | 58.8% |
+| + 크기 맞춤 증강 | 46.5% | 60.5% | 84.2% | 91.2% | 79.4% |
+| + 분할 추론 | 50.0% | 60.5% | 87.7% | 93.0% | 85.3% |
+
+- 놓친 물체가 30–50 px에 몰려 있어, 학습 물체를 이 크기로 줄이고 그림자째 붙여 넣어 증강
+- 오경보 0.5건 이하 구간은 개선 없음
+
+<details>
+<summary>기존 탐지기 FROC · 탐지 예시</summary>
+
+![FROC curves for YOLOv8n and the classical matched filter on test years](./sss_detection_froc.png "YOLOv8n과 정합필터 FROC, 시험 연도 탐지 예시")
+
+</details>
+
+## 모델 구조 · 재판정
+
+![YOLOv8n backbone, FPN-PAN neck and detection heads; physical-feature re-check classifier](./sss_architecture.png "(a) YOLOv8n 탐지기 · (b) 하이라이트–그림자 재판정 분류기")
+
+| Pd @ 영상당 오경보 1건 | 탐지기 단독 | + 재판정 |
 |---|---|---|
-| YOLOv8n | 59.6% | 78.1% |
-| 고전 정합필터 | 4.3% | — |
+| 기존 탐지기 | 59.6% | 70.2% |
+| 증강 탐지기 | 60.5% | 58.8% |
 
-![FROC curves for YOLOv8n and the classical matched filter on test years](./sss_detection_froc.png)
+- 재판정은 기존 탐지기에서만 효과 (증강 후에는 탐지기가 같은 단서를 이미 쓰는 것으로 추정)
 
-YOLOv8n의 mAP@0.5는 0.101(MILCO 0.19, NOMBO 0.01)입니다. 표적이 1024 px 영상에서 폭 수십 px로 작아 IoU 0.5 기준에 불리하므로, 탐지 위치 기준의 Pd와 함께 봅니다.
+## 운영점 이전
+
+| 검증 장면에서 Pd 91%로 정한 임계값 | 시험 연도 Pd | 오경보 / 영상 |
+|---|---|---|
+| 기존 탐지기 | 57.0% | 0.84 |
+| 증강 탐지기 | 84.2% | 3.47 |
+
+## 분류: 물리 특징 vs DINOv2
+
+![Side-scan frame, across-track highlight-shadow profiles and oriented patches](./sss_highlight_shadow.png "횡방향 하이라이트–그림자 프로파일과 nadir 기준 정렬 패치")
 
 | 패치 3분류 macro F1 | 이미지 분할 | 장면 분할 | 연도 분할 |
 |---|---|---|---|
@@ -42,115 +73,38 @@ YOLOv8n의 mAP@0.5는 0.101(MILCO 0.19, NOMBO 0.01)입니다. 표적이 1024 px 
 | DINOv2 고정 특징 + 선형 분류기 | 0.814 | 0.751 | 0.606 |
 | DINOv2 미세조정 | — | — | 0.645 |
 
-<details>
-<summary>분할별 분류 결과 · 혼동 행렬</summary>
-
-![Three-class macro F1 by evaluation split and year-split confusion matrices](./sss_classification_splits.png "분할별 3분류 macro F1과 연도 분할 혼동 행렬 (정답 위치 패치 조건)")
-
-</details>
-
-- 하이라이트–그림자 대비는 물체와 해저 배경을 구분했지만(AUROC 0.830), 물체 종류(MILCO vs NOMBO) 구분력은 낮았습니다(0.513).
-- 결과 수치: [`src/b3_yolo.json`](https://github.com/jongchan-joseph-lee/sss-mine-detection-benchmark/blob/main/src/b3_yolo.json), [`src/b2_results.json`](https://github.com/jongchan-joseph-lee/sss-mine-detection-benchmark/blob/main/src/b2_results.json), [`src/b3_patch.json`](https://github.com/jongchan-joseph-lee/sss-mine-detection-benchmark/blob/main/src/b3_patch.json) · 결과 리포트: [`docs/milco-report.html`](https://github.com/jongchan-joseph-lee/sss-mine-detection-benchmark/blob/main/docs/milco-report.html)
-
-## Cascade (탐지 → 분류 연계)
-
-YOLOv8n 후보마다 하이라이트–그림자 물리 특징으로 MILCO · NOMBO · 해저 배경을 다시 판정하고, 배경으로 판정된 후보를 버립니다. 재판정 임계값은 YOLO 학습에 쓰지 않은 학습 연도 장면(검증 26장, 물체 47개)에서 정하고 시험 연도(578장, 물체 114개)에 한 번 적용했습니다.
-
-| 영상당 오경보 | Pd, YOLO 단독 | Pd, + 재판정 | Pdc, YOLO 단독 | Pdc, + 재판정 |
-|---|---|---|---|---|
-| 0.5 | 48.2% | 53.5% | 39.5% | 43.0% |
-| 1 | 59.6% | 70.2% | 46.5% | 51.8% |
-| 2 | 72.8% | 74.6% | 55.3% | 55.3% |
-| 4 | 78.1% | 74.6% | 59.6% | 55.3% |
-
-Pd는 탐지 위치가 맞은 비율, Pdc는 위치와 종류(MILCO / NOMBO)가 모두 맞은 비율입니다. 오경보는 1024 px 영상 1장 기준입니다.
-
-- 영상당 오경보 1건 이하에서 재판정이 Pd를 5–11%p 올렸습니다. 재판정이 맞는 후보 일부도 버리므로 최대 Pd는 78.9%에서 74.6%로 낮아집니다.
-- 탐지기 단독 Pd의 상한이 79%입니다. 물체의 약 21%는 후보에 오르지 않습니다.
-- 검증 장면에서 Pd 91%가 되도록 정한 탐지 임계값이 시험 연도에서는 Pd 57%였습니다. 연도가 바뀌면 운영점이 이동하므로, 새 조사 자료로 임계값을 다시 맞추는 절차가 필요합니다(증강 탐지기에서는 84%, 아래 참고).
-- YOLO 오경보를 배경으로 추가 학습한 재판정은 맞게 찾은 물체의 25%를 잃어 채택하지 않았습니다.
-- 결과 수치: [`src/b4_cascade.json`](https://github.com/jongchan-joseph-lee/sss-mine-detection-benchmark/blob/main/src/b4_cascade.json)
+- 연도가 바뀔 때 하락폭: 물리 특징 0.04, DINOv2 0.15
 
 <details>
-<summary>모델 구조 · 하이라이트–그림자 특징</summary>
+<summary>분할별 분류 결과 · 자료 점검</summary>
 
-![YOLOv8n backbone, FPN-PAN neck and detection heads; physical-feature re-check classifier](./sss_architecture.png "(a) YOLOv8n 탐지기 (층별 채널 · 해상도, 파라미터 수는 학습된 가중치 기준) · (b) 재판정 분류기")
+![Three-class macro F1 by evaluation split and year-split confusion matrices](./sss_classification_splits.png "분할별 macro F1과 연도 분할 혼동 행렬")
 
-![Side-scan frame, across-track highlight-shadow profiles and oriented patches](./sss_highlight_shadow.png "측면주사 영상, 횡방향 하이라이트–그림자 프로파일, nadir 기준으로 정렬한 패치")
+![Objects per year, duplicated scene exports and box sizes](./sss_data_diagnosis.png "연도별 물체 수, 축소 복사본 예시, 표적 크기")
 
 </details>
 
 <details>
 <summary>면적당 오경보 예시 (가정 조건)</summary>
 
-기뢰 탐색 성능은 보통 면적당 오경보(FA/km²)로 비교하지만, 공개 자료에는 환산에 필요한 정보가 없습니다. 아래는 조건을 가정해 계산한 예시이며, 다른 연구와의 비교에는 쓸 수 없습니다.
-
-| 항목 | 가정 값 |
+| 가정 | 값 |
 |---|---|
-| 거리(range) 설정 | 한쪽 50 m, 스와스 100 m |
-| 횡방향 픽셀 크기 | 100 m / 1024 px ≈ 0.098 m |
-| 핑 간격 | 최대 핑 속도 1500 / (2 × 50 m) = 15 Hz, 속력 1.5 m/s → 0.1 m |
-| 고도 | 경사거리 → 수평거리 보정 생략 |
-| JPEG 내보내기 | 1행 = 1핑, 1024 px 영상, 416 px 영상도 같은 면적 |
+| 거리 · 스와스 | 한쪽 50 m · 100 m |
+| 픽셀 · 핑 간격 | 0.098 m · 0.1 m (15 Hz, 1.5 m/s) |
+| 영상 1장 | ≈ 0.010 km² |
 
-영상 1장 ≈ 100 m × 102 m ≈ 0.010 km²
+| 영상당 오경보 | 0.5 | 1 | 2 | 4 |
+|---|---|---|---|---|
+| 면적당 (/km²) | 49 | 98 | 195 | 391 |
 
-| 영상당 오경보 | 면적당 오경보 (가정) |
-|---|---|
-| 0.5 | 약 49 /km² |
-| 1 | 약 98 /km² |
-| 2 | 약 195 /km² |
-| 4 | 약 391 /km² |
-
-거리 설정을 한쪽 25 m로 바꾸면 영상 면적이 1/4이 되어 면적당 오경보는 4배가 됩니다. 실제 환산에는 연도별 거리 · 스와스 설정, 픽셀 크기, 핑 간격 · 고도, JPEG 내보내기 방식이 필요하지만 공개 자료(Santos et al. 2024)에는 없습니다.
+공개 자료에 거리 설정 · 픽셀 크기가 없어 다른 연구와 비교할 수 없는 예시입니다.
 
 </details>
 
-## 개선 실험: 크기 맞춤 증강
+## 한계
 
-시험 연도에서 놓친 물체는 30–50 px(1024 px 기준)에 몰려 있었고(Pd 59%), 학습 물체는 큰 물체가 많은 2015년 장면이 대부분이었습니다. 학습 장면만으로 증강 타일 1,081장을 만들어 기존 타일에 더해 학습했습니다([`src/prep_aug.py`](https://github.com/jongchan-joseph-lee/sss-mine-detection-benchmark/blob/main/src/prep_aug.py)).
+- JPEG 영상 · CPU 학습 소형 모델 · 단일 자료
+- 검증 장면 26장 → epoch · 임계값 선택 불안정
+- 증강 방향은 시험 연도 진단을 보고 정함
 
-- 축소(scale-down): 물체가 26–50 px가 되도록 영상을 줄이고, 연도별 반복 횟수로 균형을 맞춤
-- 붙여넣기(copy-paste): 물체와 그림자를 함께 잘라 다른 학습 장면의 같은 쪽(nadir 기준)에 합성
-- 스페클, 감마, 블러, JPEG 재압축
-
-| 시험 연도 Pd @ 영상당 오경보 | 0.5 | 1 | 4 | 8 | 30–50 px @ 4 |
-|---|---|---|---|---|---|
-| YOLOv8n (기존, 25 epoch) | 48.2% | 59.6% | 78.1% | 78.9% | 58.8% |
-| 원본 타일, 40 epoch | 57.9% | 60.5% | 71.9% | 71.9% | 58.8% |
-| 증강 타일, 40 epoch | 46.5% | 60.5% | 84.2% | 91.2% | 79.4% |
-| 증강 타일 + 분할 추론 | 50.0% | 60.5% | 87.7% | 93.0% | 85.3% |
-
-- 같은 epoch의 원본 타일 대비 Pd가 영상당 오경보 4건에서 +12%p(95% CI 3–22%p), 8건에서 +19%p(11–28%p) 높았습니다. 오경보 0.5건 이하에서는 약 11%p 낮아졌습니다.
-- 검증 장면에서 Pd 91%로 정한 임계값이 시험 연도에서 Pd 84%(기존 57%)였습니다. 연도가 바뀔 때 운영점 이동이 줄었습니다.
-- 증강 탐지기에는 재판정이 효과가 없었습니다(오경보 13% 제거, 맞는 탐지 5% 손실).
-- 증강 크기 범위는 학습 연도(2017 · 2021) 분포로 정했지만, 이 방향은 시험 연도 진단을 보고 잡았습니다.
-- 검증 장면(26장)이 작아 epoch 선택이 불안정하므로 마지막 epoch 가중치로 평가했습니다.
-- 결과 수치: [`src/b5_eval.json`](https://github.com/jongchan-joseph-lee/sss-mine-detection-benchmark/blob/main/src/b5_eval.json), [`src/b5_cascade_aug.json`](https://github.com/jongchan-joseph-lee/sss-mine-detection-benchmark/blob/main/src/b5_cascade_aug.json) · 가중치: [`src/weights/yolov8n_aug40.pt`](https://github.com/jongchan-joseph-lee/sss-mine-detection-benchmark/blob/main/src/weights/yolov8n_aug40.pt) · YOLOv8s · RT-DETR 비교(GPU): [`colab/compare_detectors.ipynb`](https://github.com/jongchan-joseph-lee/sss-mine-detection-benchmark/blob/main/colab/compare_detectors.ipynb)
-
-<details>
-<summary>시험 연도 FROC · 크기별 Pd</summary>
-
-![Test-year FROC and recall by object size for original and augmented training](./sss_augmentation_froc.png "원본 · 증강 학습의 시험 연도 FROC와 물체 크기별 Pd (영상당 오경보 4건)")
-
-</details>
-
-## Dataset
-
-- Santos et al. 2024, *Data in Brief* (CC BY 4.0) — Gavia AUV · Marine Sonic 900/1800 kHz, JPEG 1,170장(고유 장면 753개), MILCO · NOMBO 라벨
-- 원자료는 저장소에 포함하지 않으며 `src/download_data.sh`로 받습니다.
-
-<details>
-<summary>자료 점검 (중복 장면 · 연도별 구성)</summary>
-
-![Objects per year, duplicated scene exports and box sizes](./sss_data_diagnosis.png "연도별 고유 물체 수, 축소 복사본 예시, 표적 크기")
-
-</details>
-
-## Limitations
-
-- CPU로 학습한 소형 모델(YOLOv8n, 25 · 40 epoch)이며, 입력은 원시 신호가 아닌 JPEG 영상입니다.
-- 검증 장면이 26장으로 작아 epoch 선택이 불안정합니다.
-- 패치 분류 표는 정답 위치 패치 조건의 결과입니다. 연계 평가의 임계값은 검증 장면 26장으로 정해 표본이 작습니다.
-- 공개 자료에 거리 설정과 픽셀 크기가 없어 오경보를 면적당으로 환산하지 못했습니다.
-- 한 자료(한 장비 · 해역 계열)의 결과입니다.
+[결과 수치](https://github.com/jongchan-joseph-lee/sss-mine-detection-benchmark/tree/main/src) · [GPU 비교 노트북](https://github.com/jongchan-joseph-lee/sss-mine-detection-benchmark/blob/main/colab/compare_detectors.ipynb)
