@@ -10,7 +10,7 @@ result: "수신기 이동을 반영해 산란체 위치 오차 중앙값을 15.1
 repo: "https://github.com/jongchan-joseph-lee/SAS_signal_processing"
 cover: "./sas_scene_comparison.png"
 coverAlt: "기준 영상, 직접 만든 역투영 영상, 항법 오차를 넣은 영상 비교"
-updated: 2026-11-08
+updated: 2026-11-09
 ---
 
 공개 합성개구 소나(Synthetic Aperture Sonar, SAS) 시뮬레이션 자료(PoSSM)의 원시 신호(raw IQ)로 영상 형성, 항법 오차 보정, 객체 탐지를 직접 구현하고 기준 영상과 비교해 검증한 프로젝트입니다.
@@ -64,7 +64,15 @@ updated: 2026-11-08
 
 </details>
 
+- 처리 설정 후 기준 영상과의 일치도가 오른 것(0.672 → 0.875)은 기준 영상이 비슷한 창 처리를 거쳤을 가능성을 시사하며, 영상 품질이 좋아졌다는 뜻은 아닙니다. 창 적용으로 주엽은 넓어졌습니다(진행 방향 3 dB 폭 24.4 → 26.8 mm).
+- 보정 효과는 거리가 멀수록 줄었습니다: NCC 0.977 (15–35 m), 0.726 (35–55 m), 0.594 (55–80 m).
 - 결과 수치: [`results/v2/`](https://github.com/jongchan-joseph-lee/SAS_signal_processing/tree/main/results/v2/), [`results/v3/`](https://github.com/jongchan-joseph-lee/SAS_signal_processing/tree/main/results/v3/) · 사전 고정 조건: [`results/v3/protocol.json`](https://github.com/jongchan-joseph-lee/SAS_signal_processing/blob/main/results/v3/protocol.json) · 보고서: [`report_v3/report.html`](https://github.com/jongchan-joseph-lee/SAS_signal_processing/blob/main/report_v3/report.html)
+
+## Next Steps
+
+1. 먼 거리(35 m 이상)에서 보정 효과가 줄어드는 원인 분석
+2. 잡음을 넣은 시뮬레이션으로 같은 처리 순서 재평가, 이후 실측 SAS 자료로 확장
+3. 기준 영상과 장면 전체 차이를 만드는 처리 단계(거리별 진폭 규약, 보간, 창) 분리
 
 ## Dataset
 
