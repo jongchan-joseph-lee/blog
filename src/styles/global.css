@@ -204,6 +204,10 @@ h1, h2, h3, h4 { font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; ma
   .prose figure { margin-right: -180px; }
   .prose figcaption { max-width: var(--read); }
 }
+/* 흐름도처럼 가로로 긴 그림은 화면 폭(--wide)까지 */
+@media (min-width: 1180px) {
+  .prose figure.wide { margin-right: calc(var(--read) - var(--wide)); }
+}
 
 .edit { margin-top: 64px; font-size: 14px; color: var(--mute); max-width: var(--read); padding-top: 16px; border-top: 1px solid var(--rule); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 
