@@ -6,26 +6,26 @@
 # group       : pam | realtime | array | modeling | education  (프로젝트 페이지의 묶음)
 # role        : 내가 맡은 역할 (한두 문장)
 
-- start: 2026
-  end: 2030
-  title: Development of environmental management technologies for human–nature systems in the estuaries
-  funder: 해양수산과학기술진흥원 (KIMST)
-  group: pam
-  role: 강한 조류 해역(high-current ocean environment)에 맞춘 ICT 기반 해양포유류 PAM 시스템 개발과 하드웨어 통합 — Sparse Array Design(희소 배열 설계)과 Real-time Monitoring Software(실시간 모니터링 소프트웨어) 담당
+- start: 2025
+  end:
+  title: Development of a high-quality near-real-time ocean grid data service
+  funder: 해양수산부 – 경북대학교
+  group: realtime
+  role: 무인선 탑재 광대역 다중주파수 분할빔 소나 설치 · 시운전, 실시간 후방산란 처리, 1D-TCN 기반 해저면 탐지 · 최적화
 
 - start: 2025
   end: 2026
   title: Development of an Amphibious Rescue System for Inundation Disasters under Manned-Unmanned Vehicle
   funder: 행정안전부 – 한국산업기술기획평가원 (KEIT)
   group: array
-  role: Raspberry Pi 5 기반 4채널 Microphone Array(마이크로폰 배열) 구축, Python/Cython으로 저주파 잡음 제거 필터 설계, OpenAI Whisper(STT)와 MeloTTS(TTS)로 실시간 음성 탐지 구현
+  role: Raspberry Pi 5 기반 4채널 Microphone Array(마이크로폰 배열) 구축, Python/Cython으로 저주파 잡음 제거 필터 설계, MVDR · GCC-PHAT 방위 추정, OpenAI Whisper STT · MeloTTS TTS 구현
 
 - start: 2025
   end: 2026
   title: 해양 연구장비 활용 교육 · 자격검정 과정 (Marine Research Equipment Training & Certification Program)
   funder: 해양환경공단 (KOEM)
   group: education
-  role: 해양포유류 연구장비(Passive Hydrophone) 사용법과 Python · Julia 기반 PAM(수동음향 모니터링) 분석법 교육 진행
+  role: 하이드로폰 운용 · 현장조사, PAM(수동음향 모니터링) 기반 음원 식별(Python · PamGuard) 강의
 
 - start: 2025
   end: 2025
@@ -69,9 +69,9 @@
   group: pam
   role: 과학적 환경영향평가를 위한 해양포유류 Bioacoustic Signal Processing(생물음향 신호처리)과 Population Survey(개체군 조사)
 
-- start: 2020
-  end: 2024
-  period: 2020.04 – 2024.11
+- start: 2022
+  end:
+  period: 2022 – 현재
   title: Real-time marine biological monitoring and warning system for coastal waters around nuclear power plants
   funder: 한국수력원자력 (KHNP)
   group: realtime
