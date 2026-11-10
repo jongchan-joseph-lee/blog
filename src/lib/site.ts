@@ -24,6 +24,7 @@ export const workGroups: Record<string, string> = {
   realtime: 'Real-time Monitoring System(실시간 감시 시스템)',
   array: 'Array & Embedded Systems(배열 · 임베디드)',
   modeling: 'Propagation Modeling & Assessment(전달 모델링 · 평가)',
+  wildlife: 'Wildlife Monitoring AI(동물 모니터링 AI)',
   education: 'Education & Training(교육 · 강의)',
 };
 
