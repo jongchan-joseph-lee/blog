@@ -24,12 +24,30 @@ description: 이종찬(Jongchan Lee) — 학력, 경력, 논문, 학회 발표, 
 | 2020.03 – 2022.02 | 극지연구소 극지생명과학연구부 | 연구원 |
 | 2016.06 – 2017.06 | 극지연구소 극지해양과학연구부 | 인턴 |
 
+## Projects (프로젝트)
+
+<details>
+<summary>공개 벤치마크 3건 (수동음향 · 측면주사 소나 · 합성개구 소나)</summary>
+
+| 프로젝트 | 핵심 결과 |
+|---|---|
+| [Source-Disjoint Marine Mammal Sound Classification](projects/watkins-marine-mammal-benchmark/) | 녹음 출처 분리 시 종 분류 BA 0.64–0.76 → 0.21–0.33. 신호 유형 → 분류군 분류기 BA 0.75 |
+| [AI-based Side-Scan Sonar Mine Detection](projects/sss-mine-detection-benchmark/) | 크기 맞춤 증강으로 탐지율 +13%p. 경량 모델(3.1 M)이 탑재용으로 적합 |
+| [SAS Imaging and Navigation-Error Sensitivity](projects/sas-signal-processing/) | 수신기 이동 보상으로 위치 오차 15.1 → 1.8 mm. 딥러닝 보정은 엔트로피와 같은 정확도를 절반 시간에 냄 |
+
+</details>
+
 ## Publications (학술지 논문)
+
+<details>
+<summary>학술지 논문 4편 (게재 3 · 준비 중 1)</summary>
 
 1. **J. Lee\***, C. R. Lee, H. Lee, I. Kwon, S. Jang, S. J. Park, H. Bae, and J. S. Khim, "Bio-acoustic characteristics and spatiotemporal distribution of East Asian finless porpoises (*Neophocaena asiaeorientalis sunameri*) in the western and southern coasts of Korea: A pilot study," *in preparation*.
 2. Y. T. Son\*, S. Jin, **J. Lee**, M. Kim, J. Y. Byon, H. T. Moon, and C. H. Shin, "Marine-Life-Detection and Density-Estimation Algorithms Based on Underwater Images and Scientific Sonar Systems," *Journal of the Korean Society of Marine Environment & Safety*, Vol. 30, No. 5, pp. 373–386, 2024.
 3. **J. Lee\*** and C. R. Lee, "Methodologies and Applications of Underwater Acoustics for Marine Ecosystem Monitoring and Management," *Korean Journal of Hydrography and Marine Spatial Information*, Vol. 12, No. 2, pp. 57–68, 2023.
 4. H. Chung, **J. Lee**, and W. Y. Lee\*, "A review: marine bio-logging of animal behaviour and ocean environments," *Ocean Science Journal*, Vol. 56, No. 2, pp. 117–131, 2021.
+
+</details>
 
 ## Presentations (학술대회 발표)
 
