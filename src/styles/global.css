@@ -230,8 +230,13 @@ h1, h2, h3, h4 { font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; ma
 .profile .prose ol li { margin-top: 0.7em; }
 .profile-lede { margin-top: 0; }
 .profile-focus { margin: 40px 0 64px; }
-.profile-focus dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; }
-@media (max-width: 860px) { .profile-focus dl { grid-template-columns: minmax(0, 1fr); } }
+.skills { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; }
+.skills li { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 14px; padding: 18px 0 0; }
+.skills img { border-radius: 8px; }
+.skills b { display: block; font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.skills span { display: block; font-size: 14px; color: var(--mute); line-height: 1.6; }
+.skills-tools { margin: 22px 0 0; font-size: 14px; color: var(--mute); }
+@media (max-width: 860px) { .skills { grid-template-columns: minmax(0, 1fr); } }
 
 /* posts list */
 .posts { list-style: none; padding: 0; margin: 0; }

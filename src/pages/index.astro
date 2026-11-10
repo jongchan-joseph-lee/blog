@@ -23,7 +23,7 @@ const toc = headings.filter((h) => h.depth === 2);
         {site.links.map((l) => <li><a href={l.url}>{l.label}</a></li>)}
       </ul>
       <nav class="profile-toc" aria-label="프로필 목차">
-        <a href="#focus">지금 하고 있는 일</a>
+        <a href="#focus">Core Competencies (핵심 역량)</a>
         {toc.map((h) => <a href={`#${h.slug}`}>{h.text}</a>)}
         <a href={url('projects/')}>프로젝트 페이지</a>
       </nav>
@@ -33,10 +33,16 @@ const toc = headings.filter((h) => h.depth === 2);
       <p class="lede profile-lede">{site.intro}</p>
 
       <section class="focus profile-focus" id="focus" aria-labelledby="focus-h">
-        <h2 id="focus-h">지금 하고 있는 일</h2>
-        <dl>
-          {site.focus.map((f) => (<div><dt>{f.title}</dt><dd>{f.text}</dd></div>))}
-        </dl>
+        <h2 id="focus-h">Core Competencies (핵심 역량)</h2>
+        <ul class="skills">
+          {site.focus.map((f) => (
+            <li>
+              <img src={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/icons/${f.icon}.svg`} alt="" width="40" height="40" />
+              <div><b>{f.title}</b>{f.items.map((t) => (<span>{t}</span>))}</div>
+            </li>
+          ))}
+        </ul>
+        <p class="skills-tools">{site.tools}</p>
       </section>
 
       <div class="prose">
