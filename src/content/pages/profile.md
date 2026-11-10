@@ -7,50 +7,52 @@ description: 이종찬(Jongchan Lee) — 학력, 경력, 논문, 학회 발표, 
 
 ## About (소개)
 
-인하대학교 해양과학과에서 해양 · 기상 현상을 해석하기 위한 분석 도구(MATLAB, Fortran, Linux)와 통계 · 선형대수 · 미적분 · 확률론의 기초를 익혔습니다.
-극지연구소(Korea Polar Research Institute, KOPRI)에서 연구생활을 하며 수중음향 연구를 시작했고,
-석사과정에서는 남극 로스해 테라노바 만(Terra Nova Bay, Ross Sea)의 Ship Noise(선박소음)가
-표범물범(Leopard seal, *Hydrurga leptonyx*)의 Vocal Frequency(발성 주파수)에 미치는 영향을 연구했습니다.
-
-2022년부터 ㈜지오시스템리서치에서 해양포유류 수동음향 조사, 해양생물 실시간 음향 감시 · 경보 시스템,
-Ambient Noise(배경소음) 분석과 Sound Propagation Modeling(음파 전달 모델링), Microphone Array(마이크로폰 배열) 기반 음원 탐지 등
-연구 과제와 현장 업무를 수행하고 있습니다. 수행 과제는 [프로젝트](projects/) 페이지에 정리했습니다.
-
-## Research Interests (연구 관심)
-
-- Underwater Acoustics(수중음향)
-- Passive Acoustic Monitoring(수동음향 모니터링) / Active Acoustic Monitoring(능동음향 모니터링)
-- Sparse-array Signal Processing(희소 배열 신호처리)
-- Object Detection(객체 탐지)
-- Multimodal AI(멀티모달 인공지능)
-- Speech Recognition(음성 인식)
+극지연구소(KOPRI)에서 수중음향 연구를 시작했고, 석사과정에서 남극 로스해 선박소음(Ship Noise)이 표범물범 발성 주파수에 미치는 영향을 연구했습니다.
+2022년부터 ㈜지오시스템리서치에서 해양포유류 수동음향 조사, 실시간 음향 감시 · 경보 시스템, 배경소음 · 음파 전달 모델링, 마이크로폰 배열 음원 탐지를 맡고 있습니다. 수행 과제는 [프로젝트](projects/)에 정리했습니다.
 
 ## Education (학력)
 
-**Inha University(인하대학교)**, Incheon, Korea
-
-- **M.S.**, Bio-medical Engineering & Science (Bio-acoustics), Ocean Sciences in minor, 2022<br>
-  의생명과학(생물음향) 석사, 해양과학 부전공 · Brain Korea 21 Precision Medicine & Smart Engineering
+- **M.S.** 인하대학교 의생명과학(생물음향) · 해양과학 부전공, 2022 — 지도교수 김태원
   - Thesis: "Ship noise effects on the vocal frequency of leopard seals (*Hydrurga leptonyx*) at Terra Nova Bay, Ross Sea, Antarctica"
-  - Advisor: Prof. Taewon Kim
-- **B.S.**, Ocean Sciences(해양과학), 2020
+- **B.S.** 인하대학교 해양과학과, 2020
 
-## Research Experience (연구 경력)
+## Experience (경력)
 
 | 기간 | 소속 | 직위 |
 |---|---|---|
-| 2022.05 – 현재 | Department of System Development & Engineering, GeoSystem Research Corporation (㈜지오시스템리서치 시스템개발부) | Associate Research Engineer(전임연구원) |
-| 2020.03 – 2022.02 | Department of Polar Life Sciences, Korea Polar Research Institute (극지연구소 극지생명과학연구부) | Researcher(연구원) |
-| 2016.06 – 2017.06 | Department of Polar Ocean Sciences, Korea Polar Research Institute (극지연구소 극지해양과학연구부) | Internship(인턴) |
+| 2022.05 – 현재 | ㈜지오시스템리서치 시스템개발부 | 전임연구원 |
+| 2020.03 – 2022.02 | 극지연구소 극지생명과학연구부 | 연구원 |
+| 2016.06 – 2017.06 | 극지연구소 극지해양과학연구부 | 인턴 |
 
-## Journal Publications (학술지 논문)
+## Projects (프로젝트)
+
+<details>
+<summary>공개 벤치마크 3건 (수동음향 · 측면주사 소나 · 합성개구 소나)</summary>
+
+| 프로젝트 | 핵심 결과 |
+|---|---|
+| [Source-Disjoint Marine Mammal Sound Classification](projects/watkins-marine-mammal-benchmark/) | 녹음 출처 분리 시 종 분류 BA 0.64–0.76 → 0.21–0.33. 신호 유형 → 분류군 분류기 BA 0.75 |
+| [AI-based Side-Scan Sonar Mine Detection](projects/sss-mine-detection-benchmark/) | 크기 맞춤 증강으로 탐지율 +13%p. 경량 모델(3.1 M)이 탑재용으로 적합 |
+| [SAS Imaging and Navigation-Error Sensitivity](projects/sas-signal-processing/) | 수신기 이동 보상으로 위치 오차 15.1 → 1.8 mm. 딥러닝 보정은 엔트로피와 같은 정확도를 절반 시간에 냄 |
+
+</details>
+
+## Publications (학술지 논문)
+
+<details>
+<summary>학술지 논문 4편 (게재 3 · 준비 중 1)</summary>
 
 1. **J. Lee\***, C. R. Lee, H. Lee, I. Kwon, S. Jang, S. J. Park, H. Bae, and J. S. Khim, "Bio-acoustic characteristics and spatiotemporal distribution of East Asian finless porpoises (*Neophocaena asiaeorientalis sunameri*) in the western and southern coasts of Korea: A pilot study," *in preparation*.
 2. Y. T. Son\*, S. Jin, **J. Lee**, M. Kim, J. Y. Byon, H. T. Moon, and C. H. Shin, "Marine-Life-Detection and Density-Estimation Algorithms Based on Underwater Images and Scientific Sonar Systems," *Journal of the Korean Society of Marine Environment & Safety*, Vol. 30, No. 5, pp. 373–386, 2024.
 3. **J. Lee\*** and C. R. Lee, "Methodologies and Applications of Underwater Acoustics for Marine Ecosystem Monitoring and Management," *Korean Journal of Hydrography and Marine Spatial Information*, Vol. 12, No. 2, pp. 57–68, 2023.
 4. H. Chung, **J. Lee**, and W. Y. Lee\*, "A review: marine bio-logging of animal behaviour and ocean environments," *Ocean Science Journal*, Vol. 56, No. 2, pp. 117–131, 2021.
 
-## Conference Presentations (학술대회 발표)
+</details>
+
+## Presentations (학술대회 발표)
+
+<details>
+<summary>국내외 학술대회 7건 (2021–2025)</summary>
 
 1. **J. Lee\***, I. Hwang, and C. R. Lee, "Changes in Acoustic Characteristics of Finless Porpoises in Response to Marine Environmental Variability in Gyeonggi Bay," *Proceedings of the 40th Underwater Acoustics Symposium / Spring Meeting of the Acoustical Society of Korea*, Vol. 44, No. 1(s), p. 91, 2025.
 2. **J. Lee\***, I. Hwang, and C. R. Lee, "Seasonal Bio-sonar Activity and Variations in Acoustic Characteristics of Finless Porpoises in Gyeonggi Bay," *The Spring Meeting of the Korean Society of Oceanography (KSO)*, 2025.
@@ -60,16 +62,15 @@ Ambient Noise(배경소음) 분석과 Sound Propagation Modeling(음파 전달 �
 6. **J. Lee** and W. Y. Lee\*, "Ship noise effects on an Antarctic seal," *The 26th International Symposium on Polar Sciences*, Korea Polar Research Institute, 2021.
 7. **J. Lee**, T. W. Kim, and W. Y. Lee\*, "Ship noise effects on vocal frequency of leopard seal (*Hydrurga leptonyx*) at Terra Nova Bay, Ross Sea, Antarctica," *The Autumn Meeting of the Korean Society of Oceanography (KSO)*, 2021.
 
-## Awards & Scholarships (수상 · 장학)
+</details>
 
-- Research Performance Award(연구 성과상), BK21 Precision Medicine & Smart Engineering, Inha University, 2021
-- Tuition-Assistance Scholarship(등록금 지원 장학금), Inha University, 2020 – 2022
-
-## Technical Skills (기술 역량)
+## Skills (기술 역량)
 
 | 분야 | 내용 |
 |---|---|
-| Programming Languages(프로그래밍 언어) | Python, Julia, R, MATLAB, C/C++ (숙련도 순) |
-| Signal Processing & Data Analysis(신호처리 · 자료 분석) | Sonar data processing(소나 자료 처리), TTS/STT, TDOA(도달시간차), Beamforming(빔포밍), Noise / Bioacoustics detection(잡음 · 생물음향 탐지), Acoustic modeling(음향 모델링) |
-| AI & Machine Learning(인공지능 · 기계학습) | 음향 · 영상 분야 Deep Learning 구현 — CNN architecture optimization(CNN 구조 최적화), YOLO 기반 Object Detection / Classification(객체 탐지 · 분류) |
-| Hardware & Systems Integration(하드웨어 · 시스템 통합) | Raspberry Pi 5 기반 4채널 마이크로폰 배열 자료 수집 시스템 구성과 Source Localization(음원 위치 추정) 시스템 |
+| 언어 | Python · Julia · MATLAB · R · C/C++ |
+| Signal Processing(신호처리) | 소나 자료 처리 · Beamforming(빔포밍) · TDOA(도달시간차) · 생물음향 · 잡음 탐지 · 음향 모델링 |
+| AI | CNN · YOLO 기반 탐지 · 분류, 오디오 표현 모델 평가 |
+| System(시스템) | Raspberry Pi 4채널 마이크로폰 배열 수집 · 음원 위치 추정 |
+
+**수상 · 장학** BK21 연구 성과상 (인하대, 2021) · 등록금 지원 장학금 (인하대, 2020–2022)

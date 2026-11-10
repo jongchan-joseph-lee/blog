@@ -2,14 +2,14 @@
 
 name_ko: 이종찬
 name_en: Jongchan Lee
-role: Underwater Acoustic Engineer (수중음향 시스템 엔지니어) 
-affiliation: ㈜지오시스템리서치 시스템개발부 전임연구원 (GeoSystem Research Corporation) (2022.05 - 현재)
+role: Underwater Acoustic Engineer (수중음향 시스템 엔지니어)
+affiliation: ㈜지오시스템리서치 전임연구원 (2022.05 – 현재)
 
 # 홈 첫 문단. 
 # 줄을 바꾸려면 그냥 다음 줄에 쓰면 됩니다. 모든 줄은 앞에 띄어쓰기 2칸을 넣어 주세요.
 intro: |-
-  바다 속 소리로 해양생물과 해양환경을 이해하기 위한 도구를 만들고 있습니다.
-  하이드로폰 · 소나 계측부터 신호처리, AI 기반 탐지 · 분류, 시스템 통합과 현장 운용까지 다뤄 왔습니다.
+  바다 속 소리로 해양생물과 해양환경을 이해하는 도구를 만듭니다.
+  계측 · 신호처리 · AI 탐지 · 분류 · 시스템 통합
 
 email: chani3218@gmail.com
 
@@ -24,11 +24,11 @@ links:
 # "지금 하고 있는 일" 목록
 focus:
   - title: Passive Acoustic Monitoring
-    text: 수동음향 모니터링 · 하이드로폰 계측 · 해양포유류 탐지 · 배경소음 분석 · 방위각 추정 · 잡음 제어 
+    text: 하이드로폰 계측 · 해양포유류 탐지 · 배경소음 · 방위각 추정
   - title: Active Sonar Processing
-    text: 능동 소나 신호처리 · 광대역 분할빔 소나 · 실시간 후방산란 처리 via Buoy System & USV System
+    text: 광대역 분할빔 소나 · 실시간 후방산란 처리 (부이 · USV)
   - title: AI Detection & Classification
-    text: AI 탐지 · 분류 · STT · 오디오 표현 모델 평가
+    text: 음향 · 소나 탐지 · 분류 · 오디오 표현 모델 평가
 
 # GitHub 저장소 (각 페이지 하단 "GitHub에서 수정" 링크에 쓰입니다)
 repo: jongchan-joseph-lee/blog
