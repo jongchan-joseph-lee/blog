@@ -87,7 +87,7 @@ description: 이종찬(Jongchan Lee) — 학력, 경력, 논문, 학회 발표, 
 1. 황인성\*, 박종진, 김무건, 김운갑, **이종찬**, "해양감시를 위한 무인해양플랫폼 기술개발 및 활용방안," *한국음향학회 추계학술발표대회*, 구두, 2026.
 2. **J. Lee\***, I. Hwang, and C. R. Lee, "Changes in Acoustic Characteristics of Finless Porpoises in Response to Marine Environmental Variability in Gyeonggi Bay," *한국음향학회 춘계학술발표대회*, 구두, 한국음향학회지 44권 1(s)호, 91쪽, 2025.
 3. **J. Lee\***, I. Hwang, and C. R. Lee, "Seasonal Bio-sonar Activity and Variations in Acoustic Characteristics of Finless Porpoises in Gyeonggi Bay," *한국해양학회 춘계학술대회*, 구두, 2025.
-4. 김무건, 김운갑, 장인권, **이종찬**, 진상엽, 변주영, 문형태, 신충훈, "항로표지를 활용한 소나기반 해양생물탐지 경보시스템 구축 연구," *한국항해항만학회 추계학술대회*, 포스터, 한국항해항만학회 학술대회논문집 2024(11), 18–20쪽, 2024.
+4. 김무건\*, 김운갑, 장인권, **이종찬**, 진상엽, 변주영, 문형태, 신충훈, "항로표지를 활용한 소나기반 해양생물탐지 경보시스템 구축 연구," *한국항해항만학회 추계학술대회*, 포스터, 한국항해항만학회 학술대회논문집 2024(11), 18–20쪽, 2024.
 5. **J. Lee\***, H. Bae, C. Lee, and H. Lee, "Comparison of Acoustic Characteristics and Spatiotemporal Distribution of East Asian Finless Porpoises (*Neophocaena asiaeorientalis sunameri*) Appearing in the South and West Coastal Waters of Korea," *한국해양학회 추계학술대회*, 구두, 2023.
 6. **J. Lee**, T. W. Kim, and W. Y. Lee\*, "Ship noise effects on vocal frequency of leopard seal (*Hydrurga leptonyx*) at Terra Nova Bay, Ross Sea, Antarctica," *한국해양학회 추계학술대회*, 구두, 2021.
 
