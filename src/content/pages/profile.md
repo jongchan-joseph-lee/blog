@@ -24,16 +24,16 @@ description: 이종찬(Jongchan Lee) — 학력, 경력, 논문, 학회 발표, 
 | 2020.03 – 2022.02 | 극지연구소 극지생명과학연구부 | 연구원 |
 | 2016.06 – 2017.06 | 극지연구소 극지해양과학연구부 | 인턴 |
 
-## Projects (프로젝트)
+## Side Projects (사이드 프로젝트)
 
 <details>
 <summary>공개 벤치마크 3건 (수동음향 · 측면주사 소나 · 합성개구 소나)</summary>
 
-| 프로젝트 | 핵심 결과 |
-|---|---|
-| [Source-Disjoint Marine Mammal Sound Classification](projects/watkins-marine-mammal-benchmark/) | 녹음 출처 분리 시 종 분류 BA 0.64–0.76 → 0.21–0.33. 신호 유형 → 분류군 분류기 BA 0.75 |
-| [AI-based Side-Scan Sonar Mine Detection](projects/sss-mine-detection-benchmark/) | 크기 맞춤 증강으로 탐지율 +13%p. 경량 모델(3.1 M)이 탑재용으로 적합 |
-| [SAS Imaging and Navigation-Error Sensitivity](projects/sas-signal-processing/) | 수신기 이동 보상으로 위치 오차 15.1 → 1.8 mm. 딥러닝 보정은 엔트로피와 같은 정확도를 절반 시간에 냄 |
+| 프로젝트 | 모델 · 기법 | 도구 |
+|---|---|---|
+| [Marine Mammal Sound Classification Benchmark](projects/watkins-marine-mammal-benchmark/) | AST · VGGish · EfficientNet-B3 | PyTorch · Transformers · scikit-learn |
+| [Side-Scan Sonar Mine Detection Benchmark](projects/sss-mine-detection-benchmark/) | YOLOv8 · RT-DETR · DINOv2 | PyTorch · Ultralytics · scikit-learn |
+| [SAS Imaging & Autofocus Benchmark](projects/sas-signal-processing/) | Backprojection · GPGA · Deep autofocus | NumPy · SciPy · Numba · PyTorch |
 
 </details>
 
@@ -64,13 +64,7 @@ description: 이종찬(Jongchan Lee) — 학력, 경력, 논문, 학회 발표, 
 
 </details>
 
-## Skills (기술 역량)
+## Awards (수상 · 장학)
 
-| 분야 | 내용 |
-|---|---|
-| 언어 | Python · Julia · MATLAB · R · C/C++ |
-| Signal Processing(신호처리) | 소나 자료 처리 · Beamforming(빔포밍) · TDOA(도달시간차) · 생물음향 · 잡음 탐지 · 음향 모델링 |
-| AI | CNN · YOLO 기반 탐지 · 분류, 오디오 표현 모델 평가 |
-| System(시스템) | Raspberry Pi 4채널 마이크로폰 배열 수집 · 음원 위치 추정 |
-
-**수상 · 장학** BK21 연구 성과상 (인하대, 2021) · 등록금 지원 장학금 (인하대, 2020–2022)
+- BK21 연구 성과상 (인하대, 2021)
+- 등록금 지원 장학금 (인하대, 2020–2022)

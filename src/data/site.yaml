@@ -24,11 +24,27 @@ links:
 # "지금 하고 있는 일" 목록
 focus:
   - title: Passive Acoustic Monitoring
-    text: 하이드로폰 계측 · 해양포유류 탐지 · 배경소음 · 방위각 추정
+    icon: x_pam
+    items: [하이드로폰 계류 · 녹음 설계, DCL (탐지 · 분류 · 위치추정), 발성 특징 측정, 1/3-octave Leq 배경소음 분석]
   - title: Active Sonar Processing
-    text: 광대역 분할빔 소나 · 실시간 후방산란 처리 (부이 · USV)
+    icon: x_sonar
+    items: [CW · LFM · M-sequence 진폭변조 신호처리, Matched filtering, 위상차 기반 각도 추정, 다중주파수 응답 곡선 기반 후방산란 분류]
+  - title: Array Signal Processing
+    icon: x_array
+    items: [Sparse aperture array 설계, Spatial aliasing 분석, MVDR beamforming, GCC-PHAT TDOA 방위 추정]
+  - title: Propagation Modeling
+    icon: x_prop
+    items: [PE · Bellhop 전달손실 계산, Sonar equation 기반 탐지성능 분포도, 계절별 음속 구조 반영 센서 배치]
   - title: AI Detection & Classification
-    text: 음향 · 소나 탐지 · 분류 · 오디오 표현 모델 평가
+    icon: x_ai
+    items: [AST · VGGish · EfficientNet 오디오 표현 평가, YOLOv8 · RT-DETR 탐지, Source-disjoint 평가 · FROC]
+  - title: System Integration & Test
+    icon: x_system
+    items: [센서 · 처리 모듈 통합, 실시간 처리 파이프라인, Raspberry Pi · DAQ 임베디드 수집, 수조 · 실해역 성능 시험]
+  - title: Sonar Imaging
+    icon: sas
+    items: [Backprojection 영상 형성 · Motion compensation, "Autofocus (PGA · entropy · deep learning)", 측면주사 소나 표적 탐지]
+tools: Python · Julia · MATLAB · Java · Cython · PyTorch
 
 # GitHub 저장소 (각 페이지 하단 "GitHub에서 수정" 링크에 쓰입니다)
 repo: jongchan-joseph-lee/blog
