@@ -11,15 +11,15 @@ const groups = Object.entries(workGroups)
   .map(([key, label]) => ({ key, label, items: work.filter((w) => w.group === key) }))
   .filter((g) => g.items.length);
 ---
-<Base title="프로젝트" description="공개 연구 저장소와 연구 · 산업 과제" source="src/data/work.yaml">
+<Base title="프로젝트" description="사이드 프로젝트와 연구 · 산업 과제" source="src/data/work.yaml">
   <div class="wrap">
     <header class="page-head">
       <h1>프로젝트</h1>
-      <p class="sub">공개 자료로 직접 검증한 개인 연구와, 2020년 이후 참여한 연구 · 산업 과제입니다. 과제명은 CV의 영문 표기를 그대로 두고 맡은 역할을 중심으로 적었습니다.</p>
+      <p class="sub">공개 자료로 직접 검증한 사이드 프로젝트와, 2022년 이후 참여한 연구 · 산업 과제입니다. 과제명은 CV의 영문 표기를 그대로 두고 맡은 역할을 중심으로 적었습니다.</p>
     </header>
 
     <section class="section" style="margin-top:48px" aria-labelledby="open-research">
-      <div class="section-head"><h2 id="open-research">공개 연구</h2></div>
+      <div class="section-head"><h2 id="open-research">사이드 프로젝트</h2></div>
       {projects.map((p) => (
         <article class="proj">
           <a class="proj-fig" href={url(`projects/${p.id}/`)} tabindex="-1" aria-hidden="true">
